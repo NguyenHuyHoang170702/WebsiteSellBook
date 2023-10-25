@@ -1,0 +1,16 @@
+
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.config
+*.json
+*.key
+*.pem
+
+
+node_modules/
+bower_components/

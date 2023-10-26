@@ -1,20 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SellBook.Models;
 using SellBook.DataAccess;
+using SellBook.DataAccess.Repository.IRepository;
 
 namespace WebsiteSellBook.Controllers
 {
 	public class CategoryController : Controller
 	{
-		private readonly ApplicationDbContext _db = new ApplicationDbContext();
+		private readonly ICategoryRepository _category;
 
-		public CategoryController(ApplicationDbContext db)
+		public CategoryController(ICategoryRepository category)
 		{
-			_db = db;
+			_category = category;
 		}
 		public IActionResult Index()
 		{
-			IEnumerable<Category> objCategoryList = _db.Categories;
+			IEnumerable<Category> objCategoryList = _category.GetAll();
 			return View(objCategoryList);
 		}
 
@@ -31,8 +32,8 @@ namespace WebsiteSellBook.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				_db.Categories.Add(category);
-				_db.SaveChanges();
+				_category.Add(category);
+				_category.Save();
 				TempData["Success"] = "Create new category successful !!!";
 				TempData["Title"] = "Create category";
 				return RedirectToAction("Index");
@@ -47,7 +48,7 @@ namespace WebsiteSellBook.Controllers
 		[HttpGet]
 		public IActionResult EditCategory(int? id)
 		{
-			var exitId = _db.Categories.Single(x => x.Category_ID == id);
+			var exitId = _category.Get(item => item.Category_ID == id);
 			return View(exitId);
 
 		}
@@ -58,8 +59,8 @@ namespace WebsiteSellBook.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				_db.Categories.Update(category);
-				_db.SaveChanges();
+				_category.Update(category);
+				_category.Save();
 				TempData["Success"] = "Update category successful !!!";
 				TempData["Title"] = "Update category";
 				return RedirectToAction("Index");
@@ -75,11 +76,11 @@ namespace WebsiteSellBook.Controllers
 
 		public IActionResult DeleteCategory(int id)
 		{
-			var exitId = _db.Categories.Find(id);
+			var exitId = _category.Get(item => item.Category_ID == id);
 			if (exitId != null)
 			{
-				_db.Categories.Remove(exitId);
-				_db.SaveChanges();
+				_category.Remove(exitId);
+				_category.Save();
 				TempData["Title"] = "Remove category";
 				TempData["Success"] = "Remove category successful !!!";
 				return RedirectToAction("Index");

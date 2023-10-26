@@ -5,6 +5,7 @@ namespace SellBook.DataAccess
 {
 	public class ApplicationDbContext : DbContext
 	{
+		//Custom Db context to choose database and connection string 
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
 		{
 		}

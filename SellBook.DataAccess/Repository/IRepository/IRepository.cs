@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace SellBook.DataAccess.Repository.IRepository
 {
+	// I need IRepository to define functions 
 	public interface IRepository<T> where T : class
 	{
 		IEnumerable<T> GetAll();

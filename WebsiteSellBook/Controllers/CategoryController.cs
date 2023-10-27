@@ -7,15 +7,15 @@ namespace WebsiteSellBook.Controllers
 {
 	public class CategoryController : Controller
 	{
-		private readonly ICategoryRepository _category;
+		private readonly IUnitOfWork _unitOfWork;
 
-		public CategoryController(ICategoryRepository category)
+		public CategoryController(IUnitOfWork unitOfWork)
 		{
-			_category = category;
+			_unitOfWork = unitOfWork;
 		}
 		public IActionResult Index()
 		{
-			IEnumerable<Category> objCategoryList = _category.GetAll();
+			IEnumerable<Category> objCategoryList = _unitOfWork.Category.GetAll();
 			return View(objCategoryList);
 		}
 
@@ -32,8 +32,8 @@ namespace WebsiteSellBook.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				_category.Add(category);
-				_category.Save();
+				_unitOfWork.Category.Add(category);
+				_unitOfWork.Save();
 				TempData["Success"] = "Create new category successful !!!";
 				TempData["Title"] = "Create category";
 				return RedirectToAction("Index");
@@ -48,7 +48,7 @@ namespace WebsiteSellBook.Controllers
 		[HttpGet]
 		public IActionResult EditCategory(int? id)
 		{
-			var exitId = _category.Get(item => item.Category_ID == id);
+			var exitId = _unitOfWork.Category.Get(item => item.Category_ID == id);
 			return View(exitId);
 
 		}
@@ -59,8 +59,8 @@ namespace WebsiteSellBook.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				_category.Update(category);
-				_category.Save();
+				_unitOfWork.Category.Update(category);
+				_unitOfWork.Save();
 				TempData["Success"] = "Update category successful !!!";
 				TempData["Title"] = "Update category";
 				return RedirectToAction("Index");
@@ -76,11 +76,11 @@ namespace WebsiteSellBook.Controllers
 
 		public IActionResult DeleteCategory(int id)
 		{
-			var exitId = _category.Get(item => item.Category_ID == id);
+			var exitId = _unitOfWork.Category.Get(item => item.Category_ID == id);
 			if (exitId != null)
 			{
-				_category.Remove(exitId);
-				_category.Save();
+				_unitOfWork.Category.Remove(exitId);
+				_unitOfWork.Save();
 				TempData["Title"] = "Remove category";
 				TempData["Success"] = "Remove category successful !!!";
 				return RedirectToAction("Index");

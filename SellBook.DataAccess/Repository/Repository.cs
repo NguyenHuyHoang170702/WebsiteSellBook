@@ -9,6 +9,7 @@ namespace SellBook.DataAccess.Repository
 {
 	public class Repository<T> : IRepository<T> where T : class
 	{
+		// handle function implement to IRepository
 		private readonly ApplicationDbContext _db;
 		internal DbSet<T> dbSet;
 		public Repository(ApplicationDbContext db)

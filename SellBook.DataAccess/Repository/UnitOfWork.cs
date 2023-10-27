@@ -1,5 +1,4 @@
 ﻿using SellBook.DataAccess.Repository.IRepository;
-using SellBook.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,17 +7,18 @@ using System.Threading.Tasks;
 
 namespace SellBook.DataAccess.Repository
 {
-	public class CategoryRepository : Repository<Category>, ICategoryRepository
+	public class UnitOfWork : IUnitOfWork
 	{
+		public ICategoryRepository Category { get; private set; }
 		private ApplicationDbContext _db;
-		public CategoryRepository(ApplicationDbContext db) : base(db)
+		public UnitOfWork(ApplicationDbContext db)
 		{
 			_db = db;
+			Category = new CategoryRepository(_db);
 		}
-
-		public void Update(Category category)
+		public void Save()
 		{
-			_db.Update(category);
+			_db.SaveChanges();
 		}
 	}
 }

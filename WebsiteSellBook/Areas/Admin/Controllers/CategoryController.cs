@@ -3,8 +3,9 @@ using SellBook.Models;
 using SellBook.DataAccess;
 using SellBook.DataAccess.Repository.IRepository;
 
-namespace WebsiteSellBook.Controllers
+namespace WebsiteSellBook.Areas.Admin.Controllers
 {
+	[Area("Admin")]
 	public class CategoryController : Controller
 	{
 		private readonly IUnitOfWork _unitOfWork;
@@ -16,6 +17,10 @@ namespace WebsiteSellBook.Controllers
 		public IActionResult Index()
 		{
 			IEnumerable<Category> objCategoryList = _unitOfWork.Category.GetAll();
+			//int page = 1;
+			//var itemOnePage = 2;
+			//var totalPage = (int)Math.Ceiling(objCategoryList.Count() / (double)itemOnePage);
+			//var lstItem = objCategoryList.Reverse().Skip((page - 1) * itemOnePage).Take(itemOnePage).ToList();
 			return View(objCategoryList);
 		}
 

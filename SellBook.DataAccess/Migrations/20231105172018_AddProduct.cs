@@ -27,6 +27,21 @@ namespace SellBook.DataAccess.Migrations
                 {
                     table.PrimaryKey("PK_Products", x => x.Product_Id);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Product_Id", "Author", "ISBN", "ListPrice", "Price", "Price100", "Price50", "ProductDescription", "Title" },
+                values: new object[] { 1, "LOL", "QWE", 10.0, 10.0, 6.0, 8.0, "1TTTTT", "TEST1" });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Product_Id", "Author", "ISBN", "ListPrice", "Price", "Price100", "Price50", "ProductDescription", "Title" },
+                values: new object[] { 2, "LOL", "QWE", 10.0, 10.0, 6.0, 8.0, "2TTTTT", "TEST2" });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Product_Id", "Author", "ISBN", "ListPrice", "Price", "Price100", "Price50", "ProductDescription", "Title" },
+                values: new object[] { 3, "LOL", "QWE", 10.0, 10.0, 6.0, 8.0, "3TTTTT", "TEST3" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

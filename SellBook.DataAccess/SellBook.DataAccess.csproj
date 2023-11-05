@@ -21,4 +21,8 @@
     <ProjectReference Include="..\SellBook.Utility\SellBook.Utility.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\" />
+  </ItemGroup>
+
 </Project>

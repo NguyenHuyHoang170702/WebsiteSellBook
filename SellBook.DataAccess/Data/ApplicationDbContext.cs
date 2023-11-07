@@ -16,6 +16,13 @@ namespace SellBook.DataAccess
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
+			#region Add sample data for Category
+			modelBuilder.Entity<Category>().HasData(
+					new Category { Category_ID = 1, Category_Name = "Comestic", DisplayOrder = 1 },
+					new Category { Category_ID = 2, Category_Name = "Family", DisplayOrder = 1 },
+					new Category { Category_ID = 3, Category_Name = "History", DisplayOrder = 1 }
+				);
+			#endregion
 			#region Add sample data for Product
 			modelBuilder.Entity<Product>().HasData(
 				new Product
@@ -28,7 +35,8 @@ namespace SellBook.DataAccess
 					ListPrice = 10,
 					Price = 10,
 					Price50 = 8,
-					Price100 = 6
+					Price100 = 6,
+					CategoryId = 2,
 				},
 				new Product
 				{
@@ -40,7 +48,8 @@ namespace SellBook.DataAccess
 					ListPrice = 10,
 					Price = 10,
 					Price50 = 8,
-					Price100 = 6
+					Price100 = 6,
+					CategoryId = 1,
 				},
 				new Product
 				{
@@ -52,7 +61,8 @@ namespace SellBook.DataAccess
 					ListPrice = 10,
 					Price = 10,
 					Price50 = 8,
-					Price100 = 6
+					Price100 = 6,
+					CategoryId = 2,
 				}
 			);
 			#endregion

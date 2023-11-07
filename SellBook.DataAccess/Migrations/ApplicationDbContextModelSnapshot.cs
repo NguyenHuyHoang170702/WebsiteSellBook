@@ -43,84 +43,28 @@ namespace SellBook.DataAccess.Migrations
                     b.HasKey("Category_ID");
 
                     b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("SellBook.Models.Product", b =>
-                {
-                    b.Property<int>("Product_Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Product_Id"), 1L, 1);
-
-                    b.Property<string>("Author")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ISBN")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("ListPrice")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Price100")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Price50")
-                        .HasColumnType("float");
-
-                    b.Property<string>("ProductDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Product_Id");
-
-                    b.ToTable("Products");
 
                     b.HasData(
                         new
                         {
-                            Product_Id = 1,
-                            Author = "LOL",
-                            ISBN = "QWE",
-                            ListPrice = 10.0,
-                            Price = 10.0,
-                            Price100 = 6.0,
-                            Price50 = 8.0,
-                            ProductDescription = "1TTTTT",
-                            Title = "TEST1"
+                            Category_ID = 1,
+                            Category_Name = "Comestic",
+                            CreatedDateTime = new DateTime(2023, 11, 7, 15, 49, 18, 919, DateTimeKind.Local).AddTicks(8212),
+                            DisplayOrder = 1
                         },
                         new
                         {
-                            Product_Id = 2,
-                            Author = "LOL",
-                            ISBN = "QWE",
-                            ListPrice = 10.0,
-                            Price = 10.0,
-                            Price100 = 6.0,
-                            Price50 = 8.0,
-                            ProductDescription = "2TTTTT",
-                            Title = "TEST2"
+                            Category_ID = 2,
+                            Category_Name = "Family",
+                            CreatedDateTime = new DateTime(2023, 11, 7, 15, 49, 18, 919, DateTimeKind.Local).AddTicks(8223),
+                            DisplayOrder = 1
                         },
                         new
                         {
-                            Product_Id = 3,
-                            Author = "LOL",
-                            ISBN = "QWE",
-                            ListPrice = 10.0,
-                            Price = 10.0,
-                            Price100 = 6.0,
-                            Price50 = 8.0,
-                            ProductDescription = "3TTTTT",
-                            Title = "TEST3"
+                            Category_ID = 3,
+                            Category_Name = "History",
+                            CreatedDateTime = new DateTime(2023, 11, 7, 15, 49, 18, 919, DateTimeKind.Local).AddTicks(8224),
+                            DisplayOrder = 1
                         });
                 });
 #pragma warning restore 612, 618

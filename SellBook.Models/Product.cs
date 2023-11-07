@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -65,5 +66,10 @@ namespace SellBook.Models
 		public double Price100 { get; set; }
 		#endregion
 
+		#region Add foreign Key CategoryId
+		public int CategoryId { get; set; }
+		[ForeignKey("CategoryId")]
+		public Category Category { get; set; }
+		#endregion
 	}
 }

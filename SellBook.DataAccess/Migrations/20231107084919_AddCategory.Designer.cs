@@ -12,7 +12,7 @@ using SellBook.DataAccess;
 namespace SellBook.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231105171851_AddCategory")]
+    [Migration("20231107084919_AddCategory")]
     partial class AddCategory
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,6 +45,29 @@ namespace SellBook.DataAccess.Migrations
                     b.HasKey("Category_ID");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Category_ID = 1,
+                            Category_Name = "Comestic",
+                            CreatedDateTime = new DateTime(2023, 11, 7, 15, 49, 18, 919, DateTimeKind.Local).AddTicks(8212),
+                            DisplayOrder = 1
+                        },
+                        new
+                        {
+                            Category_ID = 2,
+                            Category_Name = "Family",
+                            CreatedDateTime = new DateTime(2023, 11, 7, 15, 49, 18, 919, DateTimeKind.Local).AddTicks(8223),
+                            DisplayOrder = 1
+                        },
+                        new
+                        {
+                            Category_ID = 3,
+                            Category_Name = "History",
+                            CreatedDateTime = new DateTime(2023, 11, 7, 15, 49, 18, 919, DateTimeKind.Local).AddTicks(8224),
+                            DisplayOrder = 1
+                        });
                 });
 #pragma warning restore 612, 618
         }

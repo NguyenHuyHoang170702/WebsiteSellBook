@@ -35,6 +35,7 @@
 				<th scope="col">Price 1 - 50</th>
 				<th scope="col">Price 50+</th>
 				<th scope="col">Price 100+</th>
+				<th scope="col">Category</th>
 				<th scope="col">Actions</th>
 			</tr>
 		</thead>
@@ -51,11 +52,12 @@
 					<td>@obj.Price50</td>
 					<td>@obj.Price100</td>
 					<td>
-
+						@obj.CategoryId.
+					</td>
+					<td>
 						<a asp-area="Admin" asp-controller="Product" asp-action="EditProduct" asp-route-id="@obj.Product_Id" class="btn btn-success"><i class="bi bi-pencil-square" style="height:30px; cursor:pointer"></i>  Edit</a>
 						&nbsp;
 						<a asp-area="Admin" asp-controller="Product" asp-action="RemoveProduct" asp-route-id="@obj.Product_Id" asp-route-id="@obj.Product_Id" class="btn btn-primary"><i class="bi bi-trash" style="height:30px; cursor:pointer"></i> Delete</a>
-
 					</td>
 
 				</tr>

@@ -75,10 +75,6 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 
 		}
 
-
-
-
-
 		public IActionResult DeleteCategory(int id)
 		{
 			var exitId = _unitOfWork.Category.Get(item => item.Category_ID == id);

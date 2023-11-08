@@ -36,6 +36,7 @@
 				<th scope="col">Price 50+</th>
 				<th scope="col">Price 100+</th>
 				<th scope="col">Category</th>
+				<th scope="col">Image</th>
 				<th scope="col">Actions</th>
 			</tr>
 		</thead>
@@ -53,6 +54,9 @@
 					<td>@obj.Price100</td>
 					<td>
 						@obj.CategoryId
+					</td>
+					<td>
+						@obj.ProductImageUrl
 					</td>
 					<td>
 						<a asp-area="Admin" asp-controller="Product" asp-action="EditProduct" asp-route-id="@obj.Product_Id" class="btn btn-success"><i class="bi bi-pencil-square" style="height:30px; cursor:pointer"></i>  Edit</a>

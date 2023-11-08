@@ -67,13 +67,14 @@ namespace SellBook.Models
 		#endregion
 
 		#region Add foreign Key CategoryId
+		[Display(Name = "Category")]
 		public int CategoryId { get; set; }
 		[ForeignKey("CategoryId")]
 		public Category Category { get; set; }
 		#endregion
 
-		#region product image URL
-		public string ProductImageUrl { get; set; }
+		#region product image Url
+		public string? ProductImageUrl { get; set; }
 		#endregion
 	}
 }

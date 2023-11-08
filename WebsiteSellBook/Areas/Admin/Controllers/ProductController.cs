@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using SellBook.DataAccess.Repository.IRepository;
 using SellBook.Models;
 
@@ -14,7 +15,8 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 		}
 		public IActionResult Index()
 		{
-			IEnumerable<Product> lstProduct = _unitOfWork.Product.GetAll();
+			List<Product> lstProduct = _unitOfWork.Product.GetAll().ToList();
+
 			if (lstProduct != null)
 			{
 				return View(lstProduct);
@@ -25,6 +27,13 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 		[HttpGet]
 		public IActionResult CreateProduct()
 		{
+			IEnumerable<SelectListItem> lstCategory = _unitOfWork.Category.GetAll().Select(item => new SelectListItem
+			{
+				Text = item.Category_Name,
+				Value = item.Category_ID.ToString(),
+			});
+
+			ViewBag.CategoryList = lstCategory;
 			return View();
 		}
 
@@ -32,6 +41,8 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 		[ValidateAntiForgeryToken]
 		public IActionResult CreateProduct(Product product)
 		{
+			product.ProductImageUrl = "test";
+
 			if (ModelState.IsValid)
 			{
 				_unitOfWork.Product.Add(product);
@@ -73,7 +84,6 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 		[ValidateAntiForgeryToken]
 		public IActionResult EditProduct(Product product)
 		{
-
 			if (ModelState.IsValid)
 			{
 				_unitOfWork.Product.Update(product);

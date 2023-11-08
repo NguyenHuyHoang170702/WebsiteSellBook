@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SellBook.DataAccess.Repository.IRepository;
 using SellBook.Models;
+using SellBook.Models.ViewModels;
 
 namespace WebsiteSellBook.Areas.Admin.Controllers
 {
@@ -27,31 +28,42 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 		[HttpGet]
 		public IActionResult CreateProduct()
 		{
-			IEnumerable<SelectListItem> lstCategory = _unitOfWork.Category.GetAll().Select(item => new SelectListItem
+			ProductVM productVM = new()
 			{
-				Text = item.Category_Name,
-				Value = item.Category_ID.ToString(),
-			});
-
-			ViewBag.CategoryList = lstCategory;
-			return View();
+				CategoryList = _unitOfWork.Category.GetAll().Select(item => new SelectListItem
+				{
+					Text = item.Category_Name,
+					Value = item.Category_ID.ToString(),
+				}),
+				Product = new Product()
+			};
+			return View(productVM);
 		}
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public IActionResult CreateProduct(Product product)
+		public IActionResult CreateProduct(ProductVM productVM)
 		{
-			product.ProductImageUrl = "test";
+			productVM.Product.ProductImageUrl = "test";
 
 			if (ModelState.IsValid)
 			{
-				_unitOfWork.Product.Add(product);
+				_unitOfWork.Product.Add(productVM.Product);
 				_unitOfWork.Save();
 				TempData["Success"] = "Create new product successful !!!";
 				TempData["Title"] = "Create product";
 				return RedirectToAction("Index");
 			}
-			return View();
+			else
+			{
+				productVM.CategoryList = _unitOfWork.Category.GetAll().Select(item => new SelectListItem
+				{
+					Text = item.Category_Name,
+					Value = item.Category_ID.ToString(),
+				});
+				return View(productVM);
+			}
+
 		}
 
 

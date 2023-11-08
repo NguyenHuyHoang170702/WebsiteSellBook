@@ -1,4 +1,4 @@
-﻿@model Product
+﻿@model SellBook.Models.ViewModels.ProductVM
 @{
 	ViewData["Title"] = "CreateProduct";
 	Layout = "~/Views/Shared/_Layout.cshtml";
@@ -17,53 +17,53 @@
 		<form method="post">
 			<div class="p-3 border border-primary">
 				<div class="mb-3">
-					<label asp-for="Title" class="form-label"></label>
-					<input asp-for="Title" type="text" class="form-control">
-					<span asp-validation-for="Title" class="text-danger"></span>
+					<label asp-for="Product.Title" class="form-label"></label>
+					<input asp-for="Product.Title" type="text" class="form-control">
+					<span asp-validation-for="Product.Title" class="text-danger"></span>
 				</div>
 				<div class="mb-3">
-					<label asp-for="ProductDescription" class="form-label"></label>
-					<input asp-for="ProductDescription" type="text" class="form-control">
-					<span asp-validation-for="ProductDescription" class="text-danger"></span>
+					<label asp-for="Product.ProductDescription" class="form-label"></label>
+					<input asp-for="Product.ProductDescription" type="text" class="form-control">
+					<span asp-validation-for="Product.ProductDescription" class="text-danger"></span>
 				</div>
 				<div class="mb-3">
-					<label asp-for="ISBN" class="form-label"></label>
-					<input asp-for="ISBN" type="text" class="form-control">
-					<span asp-validation-for="ISBN" class="text-danger"></span>
+					<label asp-for="Product.ISBN" class="form-label"></label>
+					<input asp-for="Product.ISBN" type="text" class="form-control">
+					<span asp-validation-for="Product.ISBN" class="text-danger"></span>
 				</div>
 				<div class="mb-3">
-					<label asp-for="Author" class="form-label"></label>
-					<input asp-for="Author" type="text" class="form-control">
-					<span asp-validation-for="Author" class="text-danger"></span>
+					<label asp-for="Product.Author" class="form-label"></label>
+					<input asp-for="Product.Author" type="text" class="form-control">
+					<span asp-validation-for="Product.Author" class="text-danger"></span>
 				</div>
 				<div class="mb-3">
-					<label asp-for="ListPrice" class="form-label"></label>
-					<input asp-for="ListPrice" type="text" class="form-control">
-					<span asp-validation-for="ListPrice" class="text-danger"></span>
+					<label asp-for="Product.ListPrice" class="form-label"></label>
+					<input asp-for="Product.ListPrice" type="text" class="form-control">
+					<span asp-validation-for="Product.ListPrice" class="text-danger"></span>
 				</div>
 				<div class="mb-3">
-					<label asp-for="Price" class="form-label"></label>
-					<input asp-for="Price" type="text" class="form-control">
-					<span asp-validation-for="Price" class="text-danger"></span>
+					<label asp-for="Product.Price" class="form-label"></label>
+					<input asp-for="Product.Price" type="text" class="form-control">
+					<span asp-validation-for="Product.Price" class="text-danger"></span>
 				</div>
 				<div class="mb-3">
-					<label asp-for="Price50" class="form-label"></label>
-					<input asp-for="Price50" type="text" class="form-control">
-					<span asp-validation-for="Price50" class="text-danger"></span>
+					<label asp-for="Product.Price50" class="form-label"></label>
+					<input asp-for="Product.Price50" type="text" class="form-control">
+					<span asp-validation-for="Product.Price50" class="text-danger"></span>
 				</div>
 				<div class="mb-3">
-					<label asp-for="Price100" class="form-label"></label>
-					<input asp-for="Price100" type="text" class="form-control">
-					<span asp-validation-for="Price100" class="text-danger"></span>
+					<label asp-for="Product.Price100" class="form-label"></label>
+					<input asp-for="Product.Price100" type="text" class="form-control">
+					<span asp-validation-for="Product.Price100" class="text-danger"></span>
 				</div>
 				<div class="mb-3">
-					<label asp-for="CategoryId" class="form-label"></label>
-					<select asp-for="CategoryId" asp-items="ViewBag.CategoryList" class="form-control">
+					<label asp-for="Product.CategoryId" class="form-label"></label>
+					<select asp-for="Product.CategoryId" asp-items="@Model?.CategoryList" class="form-control">
 						<option disabled selected>
 							---Choose Category---
 						</option>
 					</select>
-					<span asp-validation-for="CategoryId" class="text-danger"></span>
+					<span asp-validation-for="Product.CategoryId" class="text-danger"></span>
 				</div>
 
 				<button type="submit" class="btn btn-primary me-2">Add new Product</button>

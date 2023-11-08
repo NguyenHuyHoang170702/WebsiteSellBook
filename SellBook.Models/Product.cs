@@ -71,5 +71,9 @@ namespace SellBook.Models
 		[ForeignKey("CategoryId")]
 		public Category Category { get; set; }
 		#endregion
+
+		#region product image URL
+		public string ProductImageUrl { get; set; }
+		#endregion
 	}
 }

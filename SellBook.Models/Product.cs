@@ -68,6 +68,7 @@ namespace SellBook.Models
 		#endregion
 
 		#region product image Url
+		[Display(Name = "Image")]
 		public string? ProductImageUrl { get; set; }
 		#endregion
 

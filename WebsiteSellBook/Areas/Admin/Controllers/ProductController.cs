@@ -10,9 +10,11 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 	public class ProductController : Controller
 	{
 		private readonly IUnitOfWork _unitOfWork;
-		public ProductController(IUnitOfWork unitOfWork)
+		private readonly IWebHostEnvironment _webHostEnvironment;
+		public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
 		{
 			_unitOfWork = unitOfWork;
+			_webHostEnvironment = webHostEnvironment;
 		}
 		public IActionResult Index()
 		{
@@ -26,7 +28,7 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 		}
 
 		[HttpGet]
-		public IActionResult CreateProduct()
+		public IActionResult CreateAndUpdateProduct(int? id)
 		{
 			ProductVM productVM = new()
 			{
@@ -37,17 +39,40 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 				}),
 				Product = new Product()
 			};
-			return View(productVM);
+			if (id == null || id == 0)
+			{
+				ViewBag.Title = "Create Product";
+				return View(productVM);
+
+			}
+			else
+			{
+				ViewBag.Title = "Update Product";
+				productVM.Product = _unitOfWork.Product.Get(item => item.Product_Id == id);
+				return View(productVM);
+			}
+
 		}
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public IActionResult CreateProduct(ProductVM productVM)
+		public IActionResult CreateAndUpdateProduct(ProductVM productVM, IFormFile? file)
 		{
-			productVM.Product.ProductImageUrl = "test";
 
 			if (ModelState.IsValid)
 			{
+				string wwwRootPath = _webHostEnvironment.WebRootPath;
+				if (file != null)
+				{
+					string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+					string productPath = Path.Combine(wwwRootPath, @"images\products");
+
+					using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
+					{
+						file.CopyTo(fileStream);
+					}
+					productVM.Product.ProductImageUrl = @"\images\products\" + fileName;
+				}
 				_unitOfWork.Product.Add(productVM.Product);
 				_unitOfWork.Save();
 				TempData["Success"] = "Create new product successful !!!";
@@ -76,32 +101,6 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 				_unitOfWork.Save();
 				TempData["Success"] = "Remove product successful !!!";
 				TempData["Title"] = "Remove product";
-				return RedirectToAction("Index");
-			}
-			return View();
-		}
-
-		[HttpGet]
-		public IActionResult EditProduct(int id)
-		{
-			var exitId = _unitOfWork.Product.Get(item => item.Product_Id == id);
-			if (exitId != null)
-			{
-				return View(exitId);
-			}
-			return View();
-		}
-
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public IActionResult EditProduct(Product product)
-		{
-			if (ModelState.IsValid)
-			{
-				_unitOfWork.Product.Update(product);
-				_unitOfWork.Save();
-				TempData["Success"] = "Edit product successful !!!";
-				TempData["Title"] = "Edit product";
 				return RedirectToAction("Index");
 			}
 			return View();

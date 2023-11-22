@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Product>
+﻿@model List<Product>
 @{
 	ViewData["Title"] = "Product";
 }
@@ -24,42 +24,24 @@
 		</div>
 
 	</div>
-	<table class="table">
+	<table id="tblProductList" class="table">
 		<thead class="table-primary">
 			<tr>
-				<th scope="col">Product ID</th>
 				<th scope="col">Title</th>
-				<th scope="col">Description</th>
 				<th scope="col">ISBN</th>
+				<th scope="col">Price</th>
+				<th scope="col">Author</th>
 				<th scope="col">Category</th>
-				<th scope="col">Image</th>
 				<th scope="col">Actions</th>
 			</tr>
 		</thead>
-		<tbody>
-			@foreach (var obj in Model)
-			{
-				<tr>
-					<th scope="row">@obj.Product_Id</th>
-					<td>@obj.Title</td>
-					<td>@obj.ProductDescription</td>
-					<td>@obj.ISBN</td>
-					<td>
-						@obj.CategoryId
-					</td>
-					<td>
-						<img style="width:100px; height: 100px" alt="Product Image" src="@obj.ProductImageUrl">
 
-					</td>
-					<td>
-						<a asp-area="Admin" asp-controller="Product" asp-action="CreateAndUpdateProduct" asp-route-id="@obj.Product_Id" class="btn btn-success"><i class="bi bi-pencil-square" style="height:30px; cursor:pointer"></i>  Edit</a>
-						&nbsp;
-						<a asp-area="Admin" asp-controller="Product" asp-action="RemoveProduct" asp-route-id="@obj.Product_Id" asp-route-id="@obj.Product_Id" class="btn btn-primary"><i class="bi bi-trash" style="height:30px; cursor:pointer"></i> Delete</a>
-					</td>
-
-				</tr>
-			}
-		</tbody>
+	</table>
+	<table>
 	</table>
 </div>
+
+@section Scripts {
+	<script src="~/js/product.js"></script>
+}
 

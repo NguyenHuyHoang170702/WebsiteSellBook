@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using SellBook.DataAccess.Repository.IRepository;
 using SellBook.Models;
 using SellBook.Models.ViewModels;
@@ -18,7 +19,7 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 		}
 		public IActionResult Index()
 		{
-			List<Product> lstProduct = _unitOfWork.Product.GetAll().ToList();
+			List<Product> lstProduct = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
 
 			if (lstProduct != null)
 			{
@@ -66,17 +67,35 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 				{
 					string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
 					string productPath = Path.Combine(wwwRootPath, @"images\products");
-
+					if (!string.IsNullOrEmpty(productVM.Product.ProductImageUrl))
+					{
+						var oldImagePath = Path.Combine(wwwRootPath, productVM.Product.ProductImageUrl.TrimStart('\\'));
+						if (System.IO.File.Exists(oldImagePath))
+						{
+							System.IO.File.Delete(oldImagePath);
+						}
+					}
 					using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
 					{
 						file.CopyTo(fileStream);
 					}
 					productVM.Product.ProductImageUrl = @"\images\products\" + fileName;
 				}
-				_unitOfWork.Product.Add(productVM.Product);
+
+				if (productVM.Product.Product_Id == 0)
+				{
+					_unitOfWork.Product.Add(productVM.Product);
+					TempData["Success"] = "Create new product successful !!!";
+					TempData["Title"] = "Create product";
+				}
+				else
+				{
+					_unitOfWork.Product.Update(productVM.Product);
+					TempData["Success"] = "Update product successful !!!";
+					TempData["Title"] = "Update product";
+				}
 				_unitOfWork.Save();
-				TempData["Success"] = "Create new product successful !!!";
-				TempData["Title"] = "Create product";
+
 				return RedirectToAction("Index");
 			}
 			else
@@ -91,19 +110,47 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 
 		}
 
+		#region API Calls
+		[HttpGet]
+		public IActionResult GetAllProduct()
+		{
+			List<Product> products = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
+			return Json(new
+			{
+				data = products
+			});
+		}
 
-		public IActionResult RemoveProduct(int id)
+		[HttpDelete]
+		public IActionResult DeleteProduct(int id)
 		{
 			var exitId = _unitOfWork.Product.Get(item => item.Product_Id == id);
 			if (exitId != null)
 			{
+				var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, exitId.ProductImageUrl.TrimStart('\\'));
+				if (System.IO.File.Exists(oldImagePath))
+				{
+					System.IO.File.Delete(oldImagePath);
+				}
 				_unitOfWork.Product.Remove(exitId);
 				_unitOfWork.Save();
-				TempData["Success"] = "Remove product successful !!!";
-				TempData["Title"] = "Remove product";
-				return RedirectToAction("Index");
+
+				List<Product> products = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
+				return Json(new
+				{
+					data = products,
+					message = "Delete product success",
+					title = "Deleted",
+					icon = "success",
+				});
 			}
-			return View();
+			return Json(new
+			{
+				success = false,
+				message = "Error while deleting",
+			});
 		}
+		#endregion
+
 	}
 }

@@ -16,7 +16,7 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 		}
 		public IActionResult Index()
 		{
-			IEnumerable<Category> objCategoryList = _unitOfWork.Category.GetAll();
+			List<Category> objCategoryList = _unitOfWork.Category.GetAll().ToList();
 			//int page = 1;
 			//var itemOnePage = 2;
 			//var totalPage = (int)Math.Ceiling(objCategoryList.Count() / (double)itemOnePage);

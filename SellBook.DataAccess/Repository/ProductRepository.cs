@@ -17,7 +17,24 @@ namespace SellBook.DataAccess.Repository
 		}
 		public void Update(Product product)
 		{
+			//var exitProduct = _db.Products.FirstOrDefault(item => item.Product_Id == product.Product_Id);
+			//if (exitProduct != null)
+			//{
+			//	exitProduct.ISBN = product.ISBN;
+			//	exitProduct.Author = product.Author;
+			//	exitProduct.ProductDescription = product.ProductDescription;
+			//	exitProduct.CategoryId = product.CategoryId;
+			//	exitProduct.ListPrice = product.ListPrice;
+			//	exitProduct.Price = product.Price;
+			//	exitProduct.Price50 = product.Price50;
+			//	exitProduct.Price100 = product.Price100;
+			//	if (exitProduct.ProductImageUrl != null)
+			//	{
+			//		exitProduct.ProductImageUrl = product.ProductImageUrl; 
+			//	}
+			//}
 			_db.Update(product);
+
 		}
 	}
 }

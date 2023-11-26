@@ -19,7 +19,7 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 		}
 		public IActionResult Index()
 		{
-			List<Product> lstProduct = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
+			IEnumerable<Product> lstProduct = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
 
 			if (lstProduct != null)
 			{

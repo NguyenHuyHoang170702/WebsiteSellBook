@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SellBook.Models;
 
 namespace SellBook.DataAccess
 {
-	public class ApplicationDbContext : IdentityDbContext
+	public class ApplicationDbContext : IdentityDbContext<IdentityUser>
 	{
 		//Custom Db context to choose database and connection string 
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)

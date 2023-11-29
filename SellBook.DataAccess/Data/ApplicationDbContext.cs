@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SellBook.Models;
 
 namespace SellBook.DataAccess
 {
-	public class ApplicationDbContext : DbContext
+	public class ApplicationDbContext : IdentityDbContext
 	{
 		//Custom Db context to choose database and connection string 
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
@@ -16,6 +17,8 @@ namespace SellBook.DataAccess
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
+			base.OnModelCreating(modelBuilder);
+
 			#region Add sample data for Category
 			modelBuilder.Entity<Category>().HasData(
 					new Category { Category_ID = 1, Category_Name = "Comestic", DisplayOrder = 1 },
@@ -23,6 +26,7 @@ namespace SellBook.DataAccess
 					new Category { Category_ID = 3, Category_Name = "History", DisplayOrder = 1 }
 				);
 			#endregion
+
 			#region Add sample data for Product
 			modelBuilder.Entity<Product>().HasData(
 				new Product

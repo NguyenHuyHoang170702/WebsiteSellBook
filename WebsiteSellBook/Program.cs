@@ -15,7 +15,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 	builder.Configuration.GetConnectionString("DefaultConnection")
 ));
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+builder.Services.ConfigureApplicationCookie(options =>
+{
+	options.LoginPath = $"/Identity/Account/Login";
+	options.LoginPath = $"/Identity/Account/Logout";
+	options.LoginPath = $"/Identity/Account/AccessDenied";
+});
 builder.Services.AddRazorPages();
 // Register with container
 // if you don't add scoped, you cannot dependency injection to controller

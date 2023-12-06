@@ -12,8 +12,8 @@ using SellBook.DataAccess;
 namespace SellBook.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231201085648_addIdentityTable")]
-    partial class addIdentityTable
+    [Migration("20231206080916_addDB")]
+    partial class addDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -89,6 +89,11 @@ namespace SellBook.DataAccess.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("nvarchar(21)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -140,6 +145,10 @@ namespace SellBook.DataAccess.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -170,12 +179,10 @@ namespace SellBook.DataAccess.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -212,12 +219,10 @@ namespace SellBook.DataAccess.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -254,21 +259,21 @@ namespace SellBook.DataAccess.Migrations
                         {
                             Category_ID = 1,
                             Category_Name = "Comestic",
-                            CreatedDateTime = new DateTime(2023, 12, 1, 15, 56, 47, 93, DateTimeKind.Local).AddTicks(1447),
+                            CreatedDateTime = new DateTime(2023, 12, 6, 15, 9, 15, 525, DateTimeKind.Local).AddTicks(69),
                             DisplayOrder = 1
                         },
                         new
                         {
                             Category_ID = 2,
                             Category_Name = "Family",
-                            CreatedDateTime = new DateTime(2023, 12, 1, 15, 56, 47, 93, DateTimeKind.Local).AddTicks(1466),
+                            CreatedDateTime = new DateTime(2023, 12, 6, 15, 9, 15, 525, DateTimeKind.Local).AddTicks(99),
                             DisplayOrder = 1
                         },
                         new
                         {
                             Category_ID = 3,
                             Category_Name = "History",
-                            CreatedDateTime = new DateTime(2023, 12, 1, 15, 56, 47, 93, DateTimeKind.Local).AddTicks(1500),
+                            CreatedDateTime = new DateTime(2023, 12, 6, 15, 9, 15, 525, DateTimeKind.Local).AddTicks(102),
                             DisplayOrder = 1
                         });
                 });
@@ -364,6 +369,29 @@ namespace SellBook.DataAccess.Migrations
                             ProductImageUrl = "",
                             Title = "TEST3"
                         });
+                });
+
+            modelBuilder.Entity("SellBook.Models.ApplicationUser", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PostalCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("State")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StressAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

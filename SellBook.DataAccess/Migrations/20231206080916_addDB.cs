@@ -3,22 +3,16 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace SellBook.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class addIdentityTable : Migration
+    public partial class addDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<string>(
-                name: "ProductImageUrl",
-                table: "Products",
-                type: "nvarchar(max)",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(max)");
-
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -38,6 +32,12 @@ namespace SellBook.DataAccess.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StressAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    State = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -56,6 +56,21 @@ namespace SellBook.DataAccess.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    Category_ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Category_Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DisplayOrder = table.Column<int>(type: "int", nullable: false),
+                    CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.Category_ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -104,8 +119,8 @@ namespace SellBook.DataAccess.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
@@ -149,8 +164,8 @@ namespace SellBook.DataAccess.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -164,26 +179,53 @@ namespace SellBook.DataAccess.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.UpdateData(
-                table: "Categories",
-                keyColumn: "Category_ID",
-                keyValue: 1,
-                column: "CreatedDateTime",
-                value: new DateTime(2023, 12, 1, 15, 56, 47, 93, DateTimeKind.Local).AddTicks(1447));
+            migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    Product_Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ISBN = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Author = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ListPrice = table.Column<double>(type: "float", nullable: false),
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    Price50 = table.Column<double>(type: "float", nullable: false),
+                    Price100 = table.Column<double>(type: "float", nullable: false),
+                    ProductImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CategoryId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Product_Id);
+                    table.ForeignKey(
+                        name: "FK_Products_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Category_ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
-            migrationBuilder.UpdateData(
+            migrationBuilder.InsertData(
                 table: "Categories",
-                keyColumn: "Category_ID",
-                keyValue: 2,
-                column: "CreatedDateTime",
-                value: new DateTime(2023, 12, 1, 15, 56, 47, 93, DateTimeKind.Local).AddTicks(1466));
+                columns: new[] { "Category_ID", "Category_Name", "CreatedDateTime", "DisplayOrder" },
+                values: new object[,]
+                {
+                    { 1, "Comestic", new DateTime(2023, 12, 6, 15, 9, 15, 525, DateTimeKind.Local).AddTicks(69), 1 },
+                    { 2, "Family", new DateTime(2023, 12, 6, 15, 9, 15, 525, DateTimeKind.Local).AddTicks(99), 1 },
+                    { 3, "History", new DateTime(2023, 12, 6, 15, 9, 15, 525, DateTimeKind.Local).AddTicks(102), 1 }
+                });
 
-            migrationBuilder.UpdateData(
-                table: "Categories",
-                keyColumn: "Category_ID",
-                keyValue: 3,
-                column: "CreatedDateTime",
-                value: new DateTime(2023, 12, 1, 15, 56, 47, 93, DateTimeKind.Local).AddTicks(1500));
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Product_Id", "Author", "CategoryId", "ISBN", "ListPrice", "Price", "Price100", "Price50", "ProductDescription", "ProductImageUrl", "Title" },
+                values: new object[,]
+                {
+                    { 1, "LOL", 2, "QWE", 10.0, 10.0, 6.0, 8.0, "1TTTTT", "", "TEST1" },
+                    { 2, "LOL", 1, "QWE", 10.0, 10.0, 6.0, 8.0, "2TTTTT", "", "TEST2" },
+                    { 3, "LOL", 2, "QWE", 10.0, 10.0, 6.0, 8.0, "3TTTTT", "", "TEST3" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -223,6 +265,11 @@ namespace SellBook.DataAccess.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_CategoryId",
+                table: "Products",
+                column: "CategoryId");
         }
 
         /// <inheritdoc />
@@ -244,41 +291,16 @@ namespace SellBook.DataAccess.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Products");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
-            migrationBuilder.AlterColumn<string>(
-                name: "ProductImageUrl",
-                table: "Products",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "",
-                oldClrType: typeof(string),
-                oldType: "nvarchar(max)",
-                oldNullable: true);
-
-            migrationBuilder.UpdateData(
-                table: "Categories",
-                keyColumn: "Category_ID",
-                keyValue: 1,
-                column: "CreatedDateTime",
-                value: new DateTime(2023, 11, 8, 14, 54, 1, 677, DateTimeKind.Local).AddTicks(5090));
-
-            migrationBuilder.UpdateData(
-                table: "Categories",
-                keyColumn: "Category_ID",
-                keyValue: 2,
-                column: "CreatedDateTime",
-                value: new DateTime(2023, 11, 8, 14, 54, 1, 677, DateTimeKind.Local).AddTicks(5112));
-
-            migrationBuilder.UpdateData(
-                table: "Categories",
-                keyColumn: "Category_ID",
-                keyValue: 3,
-                column: "CreatedDateTime",
-                value: new DateTime(2023, 11, 8, 14, 54, 1, 677, DateTimeKind.Local).AddTicks(5113));
+            migrationBuilder.DropTable(
+                name: "Categories");
         }
     }
 }

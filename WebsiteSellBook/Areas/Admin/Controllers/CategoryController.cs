@@ -2,10 +2,13 @@
 using SellBook.Models;
 using SellBook.DataAccess;
 using SellBook.DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
+using SellBook.Utility;
 
 namespace WebsiteSellBook.Areas.Admin.Controllers
 {
 	[Area("Admin")]
+	[Authorize(Roles = SD.Role_Admin)]
 	public class CategoryController : Controller
 	{
 		private readonly IUnitOfWork _unitOfWork;

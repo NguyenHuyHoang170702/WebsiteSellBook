@@ -176,12 +176,10 @@ namespace SellBook.DataAccess.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -218,12 +216,10 @@ namespace SellBook.DataAccess.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -260,21 +256,21 @@ namespace SellBook.DataAccess.Migrations
                         {
                             Category_ID = 1,
                             Category_Name = "Comestic",
-                            CreatedDateTime = new DateTime(2023, 12, 4, 15, 33, 31, 902, DateTimeKind.Local).AddTicks(5851),
+                            CreatedDateTime = new DateTime(2023, 12, 6, 15, 9, 15, 525, DateTimeKind.Local).AddTicks(69),
                             DisplayOrder = 1
                         },
                         new
                         {
                             Category_ID = 2,
                             Category_Name = "Family",
-                            CreatedDateTime = new DateTime(2023, 12, 4, 15, 33, 31, 902, DateTimeKind.Local).AddTicks(5866),
+                            CreatedDateTime = new DateTime(2023, 12, 6, 15, 9, 15, 525, DateTimeKind.Local).AddTicks(99),
                             DisplayOrder = 1
                         },
                         new
                         {
                             Category_ID = 3,
                             Category_Name = "History",
-                            CreatedDateTime = new DateTime(2023, 12, 4, 15, 33, 31, 902, DateTimeKind.Local).AddTicks(5867),
+                            CreatedDateTime = new DateTime(2023, 12, 6, 15, 9, 15, 525, DateTimeKind.Local).AddTicks(102),
                             DisplayOrder = 1
                         });
                 });
@@ -379,8 +375,9 @@ namespace SellBook.DataAccess.Migrations
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Name")
-                        .HasColumnType("int");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PostalCode")
                         .HasColumnType("nvarchar(max)");

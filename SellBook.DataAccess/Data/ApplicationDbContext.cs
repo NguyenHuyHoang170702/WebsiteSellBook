@@ -75,11 +75,22 @@ namespace SellBook.DataAccess
 			);
 			#endregion
 
+			#region Add sample data for Company
+			modelBuilder.Entity<Company>().HasData(
+				new Company { CpmpanyId = 1, CompanyName = "Company1", City = "Hanoi", PhoneNumber = "0123456789", PostalCode = "1234", State = "KKKK", StressAddress = "N/A" },
+				new Company { CpmpanyId = 2, CompanyName = "Company2", City = "HoChiMinh", PhoneNumber = "0198756789", PostalCode = "3456", State = "YYYY", StressAddress = "N/A" },
+				new Company { CpmpanyId = 3, CompanyName = "Company3", City = "DaNang", PhoneNumber = "0123456123", PostalCode = "1298", State = "BBBB", StressAddress = "N/A" }
+
+				);
+			#endregion
+
 		}
 
 
 		public DbSet<Category> Categories { get; set; }
 		public DbSet<Product> Products { get; set; }
 		public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+
+		public DbSet<Company> Companies { get; set; }
 	}
 }

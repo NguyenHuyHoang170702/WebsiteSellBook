@@ -21,12 +21,6 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 		}
 		public IActionResult Index()
 		{
-			IEnumerable<Product> lstProduct = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
-
-			if (lstProduct != null)
-			{
-				return View(lstProduct);
-			}
 			return View();
 		}
 

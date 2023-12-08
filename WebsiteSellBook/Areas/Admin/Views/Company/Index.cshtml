@@ -1,0 +1,52 @@
+﻿@model List<Company>
+@{
+	ViewData["Title"] = "Index";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<partial name="_Notification" />
+
+<div class="card shadow border-0 mt-4 p-3">
+	<div class="card-header bg-primary bg-gradient ml-0 py-3">
+		<div class="row">
+			<div class="col-12 text-center">
+				<h2 class="text-white py-2">Company List</h2>
+			</div>
+		</div>
+	</div>
+	<div class="card-body p-4 ">
+		<div class="row pb-3">
+			<div class="col-6"></div>
+			<div class="col-6 text-end">
+				<a asp-area="Admin" asp-controller="Company" asp-action="CreateAndUpdateCompany" class="btn btn-primary">
+					<i class="bi bi-plus-circle" style="height:20px; cursor:pointer"></i> &ensp; Add New Company
+				</a>
+			</div>
+		</div>
+
+	</div>
+
+	<table id="tblCompanyList" class="table">
+		<thead class="table-primary">
+			<tr>
+				<th scope="col">Company Name</th>
+				<th scope="col">Stress Address</th>
+				<th scope="col">City</th>
+				<th scope="col">State</th>
+				<th scope="col">PostalCode</th>
+				<th scope="col">PhoneNumber</th>
+				<th scope="col">Actions</th>
+			</tr>
+		</thead>
+
+	</table>
+
+
+
+
+</div>
+
+
+@section Scripts {
+	<script src="~/js/company.js"></script>
+}
+

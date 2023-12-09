@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SellBook.DataAccess.Repository.IRepository;
 using SellBook.Models;
 using SellBook.Models.ViewModels;
+using SellBook.Utility;
 using SQLitePCL;
 
 namespace WebsiteSellBook.Areas.Admin.Controllers
 {
 	[Area("Admin")]
+	[Authorize(Roles = SD.Role_Admin)]
 	public class CompanyController : Controller
 	{
 		private readonly IUnitOfWork _unitOfWork;
@@ -27,7 +30,7 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 				if (id == null || id == 0)
 				{
 					ViewBag.Title = "Create Company";
-					return View();
+					return View(new Company());
 				}
 				else
 				{
@@ -43,7 +46,7 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult CreateAndUpdateCompany(Company? company)
+		public IActionResult CreateAndUpdateCompany(Company company)
 		{
 			if (ModelState.IsValid)
 			{
@@ -77,6 +80,27 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 		{
 			var getData = _unitOfWork.Company.GetAll().ToList();
 			return Json(new { data = getData });
+		}
+
+
+		[HttpDelete]
+		public IActionResult deletecompany(int? id)
+		{
+			var exitCompany = _unitOfWork.Company.Get(item => item.CpmpanyId == id);
+			if (exitCompany != null)
+			{
+				_unitOfWork.Company.Remove(exitCompany);
+				_unitOfWork.Save();
+				var companies = _unitOfWork.Company.GetAll().ToList();
+				return Json(new
+				{
+					data = companies,
+					message = "Delete company success",
+					title = "Deleted",
+					icon = "success",
+				});
+			}
+			return null;
 		}
 		#endregion
 	}

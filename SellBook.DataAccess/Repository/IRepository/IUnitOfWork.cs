@@ -12,6 +12,7 @@ namespace SellBook.DataAccess.Repository.IRepository
 		IProductRepository Product { get; }
 
 		ICompanyRepository Company { get; }
+		IShopingCartRepository ShoppingCart { get; }
 		void Save();
 	}
 }

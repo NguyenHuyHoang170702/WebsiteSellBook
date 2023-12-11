@@ -18,9 +18,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 builder.Services.ConfigureApplicationCookie(options =>
 {
+
+	options.LogoutPath = $"/Identity/Account/Logout";
+	options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
 	options.LoginPath = $"/Identity/Account/Login";
-	options.LoginPath = $"/Identity/Account/Logout";
-	options.LoginPath = $"/Identity/Account/AccessDenied";
 });
 builder.Services.AddRazorPages();
 // Register with container

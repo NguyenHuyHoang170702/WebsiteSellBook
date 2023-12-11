@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using SellBook.Models;
 using SellBook.DataAccess.Repository.IRepository;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebsiteSellBook.Areas.Customer.Controllers
 {
@@ -23,10 +25,26 @@ namespace WebsiteSellBook.Areas.Customer.Controllers
 			return View(lstProduct);
 		}
 
-		public IActionResult Details(int? id)
+		public IActionResult Details(int id)
 		{
-			Product exitProduct = _unitOfWork.Product.Get(item => item.Product_Id == id, includeProperties: "Category");
-			return View(exitProduct);
+			ShoppingCart shoppingCart = new()
+			{
+				Product = _unitOfWork.Product.Get(item => item.Product_Id == id, includeProperties: "Category"),
+				Count = 1,
+				ProductId = id,
+			};
+
+
+			return View(shoppingCart);
+		}
+
+
+		[HttpPost]
+		[Authorize]
+		public IActionResult Details(ShoppingCart shoppingCart)
+		{
+			var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+			return View();
 		}
 
 		public IActionResult Privacy()

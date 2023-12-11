@@ -13,6 +13,7 @@ namespace SellBook.DataAccess.Repository.IRepository
 
 		ICompanyRepository Company { get; }
 		IShopingCartRepository ShoppingCart { get; }
+		IApplicationUserRepository ApplicationUser { get; }
 		void Save();
 	}
 }

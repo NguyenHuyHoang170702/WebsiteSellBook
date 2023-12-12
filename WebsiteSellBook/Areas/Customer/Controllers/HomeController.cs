@@ -44,7 +44,24 @@ namespace WebsiteSellBook.Areas.Customer.Controllers
 		public IActionResult Details(ShoppingCart shoppingCart)
 		{
 			var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-			return View();
+			var exitShoppingCart = _unitOfWork.ShoppingCart.Get(item => item.Id == shoppingCart.Id && item.ApplicationUserId == userId);
+
+			shoppingCart.ApplicationUserId = userId;
+
+			if (exitShoppingCart != null)
+			{
+				exitShoppingCart.Count += shoppingCart.Count;
+				_unitOfWork.ShoppingCart.Update(exitShoppingCart);
+				TempData["Success"] = "Cart update successful !!!";
+			}
+			else
+			{
+				_unitOfWork.ShoppingCart.Add(shoppingCart);
+				TempData["Success"] = "Cart add successful !!!";
+
+			}
+			_unitOfWork.Save();
+			return RedirectToAction(nameof(Index));
 		}
 
 		public IActionResult Privacy()

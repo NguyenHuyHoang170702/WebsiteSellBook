@@ -23,9 +23,19 @@ namespace SellBook.DataAccess.Repository
 			dbSet.Add(entity);
 		}
 
-		public T Get(System.Linq.Expressions.Expression<Func<T, bool>> filter, string? includeProperties = null)
+		public T Get(System.Linq.Expressions.Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked = false)
 		{
-			IQueryable<T> query = dbSet;
+			IQueryable<T> query;
+			if (tracked == true)
+			{
+				query = dbSet;
+			}
+			else
+			{
+				query = dbSet.AsNoTracking();
+
+			}
+
 			if (!string.IsNullOrEmpty(includeProperties))
 			{
 				foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))

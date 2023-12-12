@@ -12,7 +12,6 @@ namespace SellBook.Models
 	public class ShoppingCart
 	{
 		#region Shopping Cart Id
-		[Key]
 		public int Id { get; set; }
 		#endregion
 
@@ -22,10 +21,11 @@ namespace SellBook.Models
 		[ValidateNever]
 		[ForeignKey("ProductId")]
 		public Product Product { get; set; }
-		[Range(1, 1000, ErrorMessage = "Please enter value bettween 1 to 1000")]
+
 		#endregion
 
 		#region count product
+		[Range(1, 1000, ErrorMessage = "Please enter value bettween 1 to 1000")]
 		public int Count { get; set; }
 		#endregion
 

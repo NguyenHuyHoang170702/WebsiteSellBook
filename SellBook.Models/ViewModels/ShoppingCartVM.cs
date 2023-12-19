@@ -13,7 +13,6 @@ namespace SellBook.Models.ViewModels
 	{
 
 		public IEnumerable<ShoppingCart> shoppingCartList { get; set; }
-
-		public double OrderTotal { get; set; }
+		public OrderHeader orderHeader { get; set; }
 	}
 }

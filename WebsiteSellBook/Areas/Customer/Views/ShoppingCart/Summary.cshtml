@@ -1,4 +1,5 @@
-﻿<form method="post">
+﻿@model ShoppingCartVM
+<form method="post">
 	<br />
 	<div class="container">
 		<div class="card shadow border-0">
@@ -29,8 +30,8 @@
 									<label>Name</label>
 								</div>
 								<div class="col-9">
-									<input class="form-control" type="text" data-val="true" data-val-required="The Name field is required." id="OrderHeader_Name" name="OrderHeader.Name" value="Laura Exeo" />
-									<span class="text-danger field-validation-valid" data-valmsg-for="OrderHeader.Name" data-valmsg-replace="true"></span>
+									<input class="form-control" type="text" data-val="true" asp-for="@Model.orderHeader.Name" />
+									<span class="text-danger field-validation-valid" asp-validation-for="@Model.orderHeader.Name"></span>
 								</div>
 							</div>
 							<div class="row my-1">
@@ -38,8 +39,8 @@
 									<label>Phone</label>
 								</div>
 								<div class="col-9">
-									<input class="form-control" type="text" data-val="true" data-val-required="The PhoneNumber field is required." id="OrderHeader_PhoneNumber" name="OrderHeader.PhoneNumber" value="1112223333" />
-									<span class="text-danger field-validation-valid" data-valmsg-for="OrderHeader.PhoneNumber" data-valmsg-replace="true"></span>
+									<input class="form-control" type="text" asp-for="@Model.orderHeader.PhoneNumber" />
+									<span class="text-danger field-validation-valid" asp-validation-for="@Model.orderHeader.PhoneNumber"></span>
 								</div>
 							</div>
 							<div class="row my-1">
@@ -47,8 +48,8 @@
 									<label>Street Address</label>
 								</div>
 								<div class="col-9">
-									<input class="form-control" type="text" data-val="true" data-val-required="The StreetAddress field is required." id="OrderHeader_StreetAddress" name="OrderHeader.StreetAddress" value="test 123 Ave" />
-									<span class="text-danger field-validation-valid" data-valmsg-for="OrderHeader.StreetAddress" data-valmsg-replace="true"></span>
+									<input class="form-control" type="text" asp-for="@Model.orderHeader.StressAddress" />
+									<span class="text-danger field-validation-valid" asp-validation-for="@Model.orderHeader.StressAddress"></span>
 								</div>
 							</div>
 							<div class="row my-1">
@@ -56,8 +57,8 @@
 									<label>City</label>
 								</div>
 								<div class="col-9">
-									<input class="form-control" type="text" data-val="true" data-val-required="The City field is required." id="OrderHeader_City" name="OrderHeader.City" value="New York" />
-									<span class="text-danger field-validation-valid" data-valmsg-for="OrderHeader.City" data-valmsg-replace="true"></span>
+									<input class="form-control" type="text" asp-for="@Model.orderHeader.City" />
+									<span class="text-danger field-validation-valid" asp-validation-for="@Model.orderHeader.City"></span>
 								</div>
 							</div>
 							<div class="row my-1">
@@ -65,8 +66,8 @@
 									<label>State</label>
 								</div>
 								<div class="col-9">
-									<input class="form-control" type="text" data-val="true" data-val-required="The State field is required." id="OrderHeader_State" name="OrderHeader.State" value="NY" />
-									<span class="text-danger field-validation-valid" data-valmsg-for="OrderHeader.State" data-valmsg-replace="true"></span>
+									<input class="form-control" type="text" asp-for="@Model.orderHeader.State" />
+									<span class="text-danger field-validation-valid" asp-validation-for="@Model.orderHeader.State"></span>
 								</div>
 							</div>
 							<div class="row my-1">
@@ -74,8 +75,8 @@
 									<label>Postal Code</label>
 								</div>
 								<div class="col-9">
-									<input class="form-control" type="text" data-val="true" data-val-required="The PostalCode field is required." id="OrderHeader_PostalCode" name="OrderHeader.PostalCode" value="23422" />
-									<span class="text-danger field-validation-valid" data-valmsg-for="OrderHeader.PostalCode" data-valmsg-replace="true"></span>
+									<input class="form-control" type="text" asp-for="@Model.orderHeader.PostalCode" />
+									<span class="text-danger field-validation-valid" asp-validation-for="@Model.orderHeader.PostalCode"></span>
 								</div>
 							</div>
 						</div>
@@ -84,17 +85,20 @@
 								<span class="text-info">Order Summary:</span>
 							</h4>
 							<ul class="list-group mb-3">
-								<li class="list-group-item d-flex justify-content-between">
-									<div>
-										<h6 class="my-0">Dark Skies</h6>
-										<small class="text-muted">Quantity: 1</small>
-									</div>
-									<span class="text-muted">$30.00 </span>
-								</li>
+								@foreach (var item in Model.shoppingCartList)
+								{
+									<li class="list-group-item d-flex justify-content-between">
+										<div>
+											<h6 class="my-0">@item.Product.Title</h6>
+											<small class="text-muted">Quantity: @item.Count</small>
+										</div>
+										<span class="text-muted">@((item.Price * item.Count).ToString("c")) </span>
+									</li>
+								}
 
 								<li class="list-group-item d-flex justify-content-between bg-light">
 									<small class="text-info">Total (USD)</small>
-									<strong class="text-info">$30.00</strong>
+									<strong class="text-info">@Model.orderHeader.OrderTotal.ToString("c")</strong>
 								</li>
 							</ul>
 						</div>
@@ -106,7 +110,7 @@
 					<div class="col-12 col-md-8 pt-2">
 						<p style="color:maroon; font-size:14px;">
 							Estimate Arrival Date:
-							12/20/2023 - 12/27/2023
+							@DateTime.Now.AddDays(7).ToShortDateString() - @DateTime.Now.AddDays(14).ToShortDateString()
 						</p>
 					</div>
 					<div class="col-12 col-md-4">
@@ -116,5 +120,4 @@
 			</div>
 		</div>
 	</div>
-	<input name="__RequestVerificationToken" type="hidden" value="CfDJ8CWZ_fZPbURDvxTackCPnlVWbfrAklJaVo2DhhQ6ggz_sZebgUK1HWb4SdCt7hR52nQapE6YdhPm6Mr-iTDQZkB2FCHtjrUHfaQ_Pm6YN2DQW-LGUggm4JIBlORvkzOljLORu3qmlAs8VANgbqJOKwzL_Rg0G3ghWYKuV39u87uLcN8Cs3hwbdGHXcCQWVx0kQ" />
 </form>

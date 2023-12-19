@@ -249,28 +249,28 @@ namespace SellBook.DataAccess.Migrations
 
                     b.HasKey("Category_ID");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
 
                     b.HasData(
                         new
                         {
                             Category_ID = 1,
                             Category_Name = "Comestic",
-                            CreatedDateTime = new DateTime(2023, 12, 12, 0, 22, 42, 976, DateTimeKind.Local).AddTicks(3368),
+                            CreatedDateTime = new DateTime(2023, 12, 11, 14, 35, 5, 785, DateTimeKind.Local).AddTicks(1046),
                             DisplayOrder = 1
                         },
                         new
                         {
                             Category_ID = 2,
                             Category_Name = "Family",
-                            CreatedDateTime = new DateTime(2023, 12, 12, 0, 22, 42, 976, DateTimeKind.Local).AddTicks(3389),
+                            CreatedDateTime = new DateTime(2023, 12, 11, 14, 35, 5, 785, DateTimeKind.Local).AddTicks(1062),
                             DisplayOrder = 1
                         },
                         new
                         {
                             Category_ID = 3,
                             Category_Name = "History",
-                            CreatedDateTime = new DateTime(2023, 12, 12, 0, 22, 42, 976, DateTimeKind.Local).AddTicks(3390),
+                            CreatedDateTime = new DateTime(2023, 12, 11, 14, 35, 5, 785, DateTimeKind.Local).AddTicks(1063),
                             DisplayOrder = 1
                         });
                 });
@@ -304,7 +304,7 @@ namespace SellBook.DataAccess.Migrations
 
                     b.HasKey("CpmpanyId");
 
-                    b.ToTable("Companies");
+                    b.ToTable("Companies", (string)null);
 
                     b.HasData(
                         new
@@ -385,7 +385,7 @@ namespace SellBook.DataAccess.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
 
                     b.HasData(
                         new
@@ -456,7 +456,7 @@ namespace SellBook.DataAccess.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ShoppingCarts");
+                    b.ToTable("ShoppingCarts", (string)null);
                 });
 
             modelBuilder.Entity("SellBook.Models.ApplicationUser", b =>

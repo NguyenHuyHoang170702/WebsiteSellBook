@@ -34,7 +34,7 @@ namespace SellBook.DataAccess
 				{
 					Product_Id = 1,
 					Title = "TEST1",
-					ProductDescription = "1TTTTT",
+					ProductDescription = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
 					Author = "LOL",
 					ISBN = "QWE",
 					ListPrice = 10,
@@ -48,7 +48,7 @@ namespace SellBook.DataAccess
 				{
 					Product_Id = 2,
 					Title = "TEST2",
-					ProductDescription = "2TTTTT",
+					ProductDescription = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
 					Author = "LOL",
 					ISBN = "QWE",
 					ListPrice = 10,
@@ -62,7 +62,7 @@ namespace SellBook.DataAccess
 				{
 					Product_Id = 3,
 					Title = "TEST3",
-					ProductDescription = "3TTTTT",
+					ProductDescription = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
 					Author = "LOL",
 					ISBN = "QWE",
 					ListPrice = 10,

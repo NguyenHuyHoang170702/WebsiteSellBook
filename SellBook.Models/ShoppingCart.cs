@@ -29,12 +29,19 @@ namespace SellBook.Models
 		public int Count { get; set; }
 		#endregion
 
+
 		#region user Id
 		public string ApplicationUserId { get; set; }
 		[ValidateNever]
 		[ForeignKey("ApplicationUserId")]
 		public ApplicationUser ApplicationUser { get; set; }
 
+		#endregion
+
+
+		#region Price
+		[NotMapped]
+		public double Price { get; set; }
 		#endregion
 
 	}

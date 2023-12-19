@@ -19,6 +19,10 @@ namespace SellBook.DataAccess.Repository
 
 		public IApplicationUserRepository ApplicationUser { get; private set; }
 
+		public IOrderDetail OrderDetail { get; private set; }
+
+		public IOrderHeader OrderHeader { get; private set; }
+
 		private ApplicationDbContext _db;
 		public UnitOfWork(ApplicationDbContext db)
 		{
@@ -28,6 +32,8 @@ namespace SellBook.DataAccess.Repository
 			Company = new CompanyRepository(_db);
 			ShoppingCart = new ShoppingCartRepository(_db);
 			ApplicationUser = new ApplicationUserRepository(_db);
+			OrderDetail = new OrderDetailRepository(_db);
+			OrderHeader = new OrderHeaderRepository(_db);
 		}
 		public void Save()
 		{

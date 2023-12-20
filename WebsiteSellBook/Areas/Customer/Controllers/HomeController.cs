@@ -25,13 +25,13 @@ namespace WebsiteSellBook.Areas.Customer.Controllers
 			return View(lstProduct);
 		}
 
-		public IActionResult Details(int id)
+		public IActionResult Details(int Productid)
 		{
 			ShoppingCart shoppingCart = new()
 			{
-				Product = _unitOfWork.Product.Get(item => item.Product_Id == id, includeProperties: "Category"),
+				Product = _unitOfWork.Product.Get(item => item.Product_Id == Productid, includeProperties: "Category"),
 				Count = 1,
-				ProductId = id,
+				ProductId = Productid,
 			};
 
 
@@ -43,26 +43,33 @@ namespace WebsiteSellBook.Areas.Customer.Controllers
 		[Authorize]
 		public IActionResult Details(ShoppingCart shoppingCart)
 		{
-			var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-			var exitShoppingCart = _unitOfWork.ShoppingCart.Get(item => item.Id == shoppingCart.Id && item.ApplicationUserId == userId);
+			var claimsIdentity = (ClaimsIdentity)User.Identity;
+			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-			shoppingCart.ApplicationUserId = userId;
+
+			ShoppingCart exitShoppingCart = _unitOfWork.ShoppingCart.Get(item => item.ApplicationUserId == userId && item.ProductId == shoppingCart.ProductId);
+
 
 			if (exitShoppingCart != null)
 			{
 				exitShoppingCart.Count += shoppingCart.Count;
 				_unitOfWork.ShoppingCart.Update(exitShoppingCart);
 				TempData["Success"] = "Cart update successful !!!";
+				_unitOfWork.Save();
 			}
 			else
 			{
+				shoppingCart.ApplicationUserId = userId;
 				_unitOfWork.ShoppingCart.Add(shoppingCart);
 				TempData["Success"] = "Cart add successful !!!";
+				_unitOfWork.Save();
 
 			}
-			_unitOfWork.Save();
+
 			return RedirectToAction(nameof(Index));
 		}
+
+
 
 		public IActionResult Privacy()
 		{

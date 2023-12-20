@@ -12,6 +12,7 @@ namespace SellBook.Models
 	public class ShoppingCart
 	{
 		#region Shopping Cart Id
+		[Key]
 		public int Id { get; set; }
 		#endregion
 

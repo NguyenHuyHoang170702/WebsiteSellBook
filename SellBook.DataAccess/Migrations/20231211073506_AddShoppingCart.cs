@@ -15,7 +15,7 @@ namespace SellBook.DataAccess.Migrations
 				name: "ShoppingCarts",
 				columns: table => new
 				{
-					Id = table.Column<int>(type: "int", nullable: false),
+					Id = table.Column<int>(type: "int", nullable: false).Annotation("SqlServer:Identity", "1, 1"),
 					ProductId = table.Column<int>(type: "int", nullable: false),
 					Count = table.Column<int>(type: "int", nullable: false),
 					ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)

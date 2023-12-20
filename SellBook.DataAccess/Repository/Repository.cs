@@ -36,6 +36,11 @@ namespace SellBook.DataAccess.Repository
 
 			}
 
+			if (filter != null)
+			{
+				query = query.Where(filter);
+			}
+
 			if (!string.IsNullOrEmpty(includeProperties))
 			{
 				foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))

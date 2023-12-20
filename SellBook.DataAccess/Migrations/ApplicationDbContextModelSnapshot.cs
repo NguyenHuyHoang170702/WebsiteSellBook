@@ -256,21 +256,21 @@ namespace SellBook.DataAccess.Migrations
                         {
                             Category_ID = 1,
                             Category_Name = "Comestic",
-                            CreatedDateTime = new DateTime(2023, 12, 19, 15, 34, 44, 323, DateTimeKind.Local).AddTicks(7565),
+                            CreatedDateTime = new DateTime(2023, 12, 20, 22, 18, 47, 842, DateTimeKind.Local).AddTicks(1414),
                             DisplayOrder = 1
                         },
                         new
                         {
                             Category_ID = 2,
                             Category_Name = "Family",
-                            CreatedDateTime = new DateTime(2023, 12, 19, 15, 34, 44, 323, DateTimeKind.Local).AddTicks(7586),
+                            CreatedDateTime = new DateTime(2023, 12, 20, 22, 18, 47, 842, DateTimeKind.Local).AddTicks(1432),
                             DisplayOrder = 1
                         },
                         new
                         {
                             Category_ID = 3,
                             Category_Name = "History",
-                            CreatedDateTime = new DateTime(2023, 12, 19, 15, 34, 44, 323, DateTimeKind.Local).AddTicks(7587),
+                            CreatedDateTime = new DateTime(2023, 12, 20, 22, 18, 47, 842, DateTimeKind.Local).AddTicks(1433),
                             DisplayOrder = 1
                         });
                 });

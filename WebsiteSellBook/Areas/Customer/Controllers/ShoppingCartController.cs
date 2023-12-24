@@ -5,6 +5,8 @@ using SellBook.DataAccess.Repository.IRepository;
 using SellBook.Models;
 using SellBook.Models.ViewModels;
 using SellBook.Utility;
+using Stripe;
+using Stripe.Checkout;
 using System.Security.Claims;
 
 namespace WebsiteSellBook.Areas.Customer.Controllers
@@ -29,7 +31,7 @@ namespace WebsiteSellBook.Areas.Customer.Controllers
 			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 			ShoppingCartVM = new()
 			{
-				shoppingCartList = _unitOfWork.ShoppingCart.GetAll(item => item.ApplicationUser.Id == userId, includeProperties: "Product"),
+				shoppingCartList = _unitOfWork.ShoppingCart.GetAll(item => item.ApplicationUserId == userId, includeProperties: "Product"),
 				orderHeader = new OrderHeader()
 			};
 
@@ -61,14 +63,14 @@ namespace WebsiteSellBook.Areas.Customer.Controllers
 
 		}
 
-		public IActionResult Plus(int id)
+		public IActionResult Plus(int Productid)
 		{
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
 			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-			var exitProduct = _unitOfWork.Product.Get(item => item.Product_Id == id);
+			var exitProduct = _unitOfWork.Product.Get(item => item.Product_Id == Productid);
 			if (exitProduct != null)
 			{
-				var updateCart = _unitOfWork.ShoppingCart.Get(item => item.ApplicationUser.Id == userId && item.Product.Product_Id == exitProduct.Product_Id);
+				var updateCart = _unitOfWork.ShoppingCart.Get(item => item.ApplicationUserId == userId && item.ProductId == exitProduct.Product_Id);
 				if (updateCart != null)
 				{
 					updateCart.Count += 1;
@@ -79,14 +81,14 @@ namespace WebsiteSellBook.Areas.Customer.Controllers
 			return RedirectToAction(nameof(Index));
 		}
 
-		public IActionResult Minus(int id)
+		public IActionResult Minus(int Productid)
 		{
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
 			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-			var exitProduct = _unitOfWork.Product.Get(item => item.Product_Id == id);
+			var exitProduct = _unitOfWork.Product.Get(item => item.Product_Id == Productid);
 			if (exitProduct != null)
 			{
-				var updateCart = _unitOfWork.ShoppingCart.Get(item => item.ApplicationUser.Id == userId && item.Product.Product_Id == exitProduct.Product_Id);
+				var updateCart = _unitOfWork.ShoppingCart.Get(item => item.ApplicationUserId == userId && item.ProductId == exitProduct.Product_Id);
 				if (updateCart.Count > 1)
 				{
 					updateCart.Count -= 1;
@@ -101,11 +103,11 @@ namespace WebsiteSellBook.Areas.Customer.Controllers
 			return RedirectToAction(nameof(Index));
 		}
 
-		public IActionResult Delete(int id)
+		public IActionResult Delete(int Productid)
 		{
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
 			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-			var exitProduct = _unitOfWork.Product.Get(item => item.Product_Id == id);
+			var exitProduct = _unitOfWork.Product.Get(item => item.Product_Id == Productid);
 			if (exitProduct != null)
 			{
 				var updateCart = _unitOfWork.ShoppingCart.Get(item => item.ApplicationUser.Id == userId && item.Product.Product_Id == exitProduct.Product_Id);
@@ -191,6 +193,38 @@ namespace WebsiteSellBook.Areas.Customer.Controllers
 			if (applicationUser.CompanyId.GetValueOrDefault() == 0)
 			{
 				//Stripe logic
+				var domain = "https://localhost:44339/";
+				var options = new Stripe.Checkout.SessionCreateOptions
+				{
+					SuccessUrl = domain + $"customer/shoppingcart/OrderComfirmation?id={ShoppingCartVM.orderHeader.Id}",
+					CancelUrl = domain + "customer/shoppingcart/index",
+					LineItems = new List<Stripe.Checkout.SessionLineItemOptions>(),
+					Mode = "payment",
+				};
+
+				foreach (var item in ShoppingCartVM.shoppingCartList)
+				{
+					var sessionLineItem = new SessionLineItemOptions
+					{
+						PriceData = new SessionLineItemPriceDataOptions
+						{
+							UnitAmount = (long)(item.Price * 100),
+							Currency = "usd",
+							ProductData = new SessionLineItemPriceDataProductDataOptions
+							{
+								Name = item.Product.Title
+							}
+						},
+						Quantity = item.Count,
+					};
+					options.LineItems.Add(sessionLineItem);
+				}
+				var service = new SessionService();
+				Session session = service.Create(options);
+				_unitOfWork.OrderHeader.UpdateStripePaymentId(ShoppingCartVM.orderHeader.Id, session.Id, session.PaymentIntentId);
+				_unitOfWork.Save();
+				Response.Headers.Add("location", session.Url);
+				return new StatusCodeResult(303);
 			}
 			return RedirectToAction(nameof(OrderComfirmation), new { id = ShoppingCartVM.orderHeader.Id });
 		}
@@ -198,6 +232,21 @@ namespace WebsiteSellBook.Areas.Customer.Controllers
 
 		public IActionResult OrderComfirmation(int id)
 		{
+			OrderHeader orderHeader = _unitOfWork.OrderHeader.Get(item => item.Id == id, includeProperties: "ApplicationUser");
+			if (orderHeader.PaymentStatus != SD.PaymentStatusDelayedPayment)
+			{
+				var service = new SessionService();
+				Session session = service.Get(orderHeader.SessionId);
+				if (session.PaymentStatus.ToLower() == "paid")
+				{
+					_unitOfWork.OrderHeader.UpdateStripePaymentId(orderHeader.Id, session.Id, orderHeader.PaymentIntentId);
+					_unitOfWork.OrderHeader.UpdateStatus(id, SD.StatusApproved, SD.PaymentStatusApproved);
+					_unitOfWork.Save();
+				}
+			}
+			List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart.GetAll(item => item.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
+			_unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
+			_unitOfWork.Save();
 			return View(id);
 		}
 	}

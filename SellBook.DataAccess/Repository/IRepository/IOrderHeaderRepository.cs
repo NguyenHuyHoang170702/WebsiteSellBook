@@ -11,5 +11,7 @@ namespace SellBook.DataAccess.Repository.IRepository
 	public interface IOrderHeader : IRepository<OrderHeader>
 	{
 		void Update(OrderHeader orderHeader);
+		void UpdateStatus(int id, string Orderstatus, string? paymentStatus = null);
+		void UpdateStripePaymentId(int id, string sessionId, string? paymentIntentId);
 	}
 }

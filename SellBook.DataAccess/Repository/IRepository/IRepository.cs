@@ -14,7 +14,7 @@ namespace SellBook.DataAccess.Repository.IRepository
 		T Get(Expression<Func<T, bool>> filter = null, string? includeProperties = null, bool tracked = false);
 		void Add(T entity);
 		void Remove(T entity);
-		void Remove(IEnumerable<T> entities);
+		void RemoveRange(IEnumerable<T> entities);
 
 	}
 }

@@ -20,5 +20,34 @@ namespace SellBook.DataAccess.Repository
 		{
 			_db.Update(orderHeader);
 		}
+
+		public void UpdateStatus(int id, string Orderstatus, string? paymentStatus = null)
+		{
+			var orderFromDB = _db.OrderHeaders.FirstOrDefault(item => item.Id == id);
+			if (orderFromDB != null)
+			{
+				orderFromDB.OrderStatus = Orderstatus;
+				if (!string.IsNullOrEmpty(paymentStatus))
+				{
+					orderFromDB.PaymentStatus = paymentStatus;
+				}
+			}
+
+		}
+
+		public void UpdateStripePaymentId(int id, string sessionId, string? paymentIntentId)
+		{
+			var orderFromDB = _db.OrderHeaders.FirstOrDefault(item => item.Id == id);
+			if (!string.IsNullOrEmpty(sessionId))
+			{
+				orderFromDB.SessionId = sessionId;
+			}
+
+			if (!string.IsNullOrEmpty(paymentIntentId))
+			{
+				orderFromDB.PaymentIntentId = paymentIntentId;
+				orderFromDB.PaymentDate = DateTime.Now;
+			}
+		}
 	}
 }

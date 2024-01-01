@@ -28,10 +28,10 @@ function loadDataTable(status) {
             { data: 'orderStatus', "Width": "20%" },
             { data: 'orderTotal', "Width": "10%" },
             {
-                data: 'product_Id',
+                data: 'id',
                 "render": function (data) {
                     return `<div class="w-75 btn-group" role="group">
-                    <a href="/admin/product/detail?id=${data}" class="btn btn-success"><i class="bi bi-pencil-square" style="height:30px; cursor:pointer"></i>  Detail</a>
+                    <a href="/admin/order/details?orderId=${data}" class="btn btn-success"><i class="bi bi-arrow-right-circle-fill style="height:30px; cursor:pointer"></i> &nbsp; Detail</a>
                     </div>`
                 }, "Width": "15%"
             }

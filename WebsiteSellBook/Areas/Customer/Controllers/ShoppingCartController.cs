@@ -223,6 +223,7 @@ namespace WebsiteSellBook.Areas.Customer.Controllers
 				Session session = service.Create(options);
 				_unitOfWork.OrderHeader.UpdateStripePaymentId(ShoppingCartVM.orderHeader.Id, session.Id, session.PaymentIntentId);
 				_unitOfWork.Save();
+
 				Response.Headers.Add("location", session.Url);
 				return new StatusCodeResult(303);
 			}

@@ -62,10 +62,38 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 
 			_unitOfWork.OrderHeader.Update(orderHeaderFromDb);
 			_unitOfWork.Save();
-			TempData["Success"] = "Update Order Header successful !!!";
+			TempData["Success"] = "Update Order details successful !!!";
 			return RedirectToAction(nameof(Details), new { orderId = orderHeaderFromDb.Id });
 		}
 
+		[HttpPost]
+		[Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
+		public IActionResult StartProcessing()
+		{
+			_unitOfWork.OrderHeader.UpdateStatus(orderVM.orderHeader.Id, SD.StatusInProcess);
+			_unitOfWork.Save();
+			TempData["Success"] = "Update Order details successful !!!";
+			return RedirectToAction(nameof(Details), new { orderId = orderVM.orderHeader.Id });
+		}
+
+		[HttpPost]
+		[Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
+		public IActionResult ShipOrder()
+		{
+			var orderHeader = _unitOfWork.OrderHeader.Get(item => item.Id == orderVM.orderHeader.Id);
+			orderHeader.TrackingNumber = orderVM.orderHeader.TrackingNumber;
+			orderHeader.Carrier = orderVM.orderHeader.Carrier;
+			orderHeader.OrderStatus = SD.StatusShipped;
+			orderHeader.ShippingDate = DateTime.Now;
+			if (orderHeader.OrderStatus == SD.PaymentStatusDelayedPayment)
+			{
+				orderHeader.PaymentDueDate = DateOnly.FromDateTime(DateTime.Now.AddDays(30));
+			}
+			_unitOfWork.OrderHeader.Update(orderHeader);
+			_unitOfWork.Save();
+			TempData["Success"] = "Order ShippedS successful !!!";
+			return RedirectToAction(nameof(Details), new { orderId = orderVM.orderHeader.Id });
+		}
 
 		#region API Calls
 

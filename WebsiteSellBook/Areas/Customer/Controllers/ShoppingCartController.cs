@@ -132,6 +132,7 @@ namespace WebsiteSellBook.Areas.Customer.Controllers
 			};
 
 			ShoppingCartVM.orderHeader.ApplicationUser = _unitOfWork.ApplicationUser.Get(item => item.Id == userId);
+
 			ShoppingCartVM.orderHeader.ApplicationUserId = ShoppingCartVM.orderHeader.ApplicationUser.Id;
 			ShoppingCartVM.orderHeader.Name = ShoppingCartVM.orderHeader.ApplicationUser.Name;
 			ShoppingCartVM.orderHeader.PhoneNumber = ShoppingCartVM.orderHeader.ApplicationUser.PhoneNumber;
@@ -221,6 +222,7 @@ namespace WebsiteSellBook.Areas.Customer.Controllers
 				}
 				var service = new SessionService();
 				Session session = service.Create(options);
+
 				_unitOfWork.OrderHeader.UpdateStripePaymentId(ShoppingCartVM.orderHeader.Id, session.Id, session.PaymentIntentId);
 				_unitOfWork.Save();
 
@@ -240,7 +242,7 @@ namespace WebsiteSellBook.Areas.Customer.Controllers
 				Session session = service.Get(orderHeader.SessionId);
 				if (session.PaymentStatus.ToLower() == "paid")
 				{
-					_unitOfWork.OrderHeader.UpdateStripePaymentId(orderHeader.Id, session.Id, orderHeader.PaymentIntentId);
+					_unitOfWork.OrderHeader.UpdateStripePaymentId(orderHeader.Id, session.Id, session.PaymentIntentId);
 					_unitOfWork.OrderHeader.UpdateStatus(id, SD.StatusApproved, SD.PaymentStatusApproved);
 					_unitOfWork.Save();
 				}

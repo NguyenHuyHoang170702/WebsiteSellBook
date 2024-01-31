@@ -4,6 +4,7 @@ using SellBook.Models;
 using SellBook.DataAccess.Repository.IRepository;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using SellBook.Utility;
 
 namespace WebsiteSellBook.Areas.Customer.Controllers
 {
@@ -54,16 +55,17 @@ namespace WebsiteSellBook.Areas.Customer.Controllers
 			{
 				exitShoppingCart.Count += shoppingCart.Count;
 				_unitOfWork.ShoppingCart.Update(exitShoppingCart);
-				TempData["Success"] = "Cart update successful !!!";
 				_unitOfWork.Save();
+				TempData["Success"] = "Cart update successful !!!";
 			}
 			else
 			{
 				shoppingCart.ApplicationUserId = userId;
 				_unitOfWork.ShoppingCart.Add(shoppingCart);
-				TempData["Success"] = "Cart add successful !!!";
-				_unitOfWork.Save();
 
+				_unitOfWork.Save();
+				HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart.GetAll(item => item.ApplicationUserId == userId).Count());
+				TempData["Success"] = "Cart add successful !!!";
 			}
 
 			return RedirectToAction(nameof(Index));

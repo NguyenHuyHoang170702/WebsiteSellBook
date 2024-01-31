@@ -24,5 +24,7 @@ namespace SellBook.Utility
 		public const string PaymentStatusApproved = "Approved";
 		public const string PaymentStatusDelayedPayment = "Approved ForDelayedPayment";
 		public const string PaymentStatusRejected = "Rejected";
+
+		public const string SessionCart = "SessionShoppingCart";
 	}
 }

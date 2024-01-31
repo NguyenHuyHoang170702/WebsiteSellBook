@@ -97,6 +97,7 @@ namespace WebsiteSellBook.Areas.Customer.Controllers
 				else if (updateCart.Count <= 1)
 				{
 					_unitOfWork.ShoppingCart.Remove(updateCart);
+					HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart.GetAll(item => item.ApplicationUserId == userId).Count());
 				}
 				_unitOfWork.Save();
 			}
@@ -114,6 +115,7 @@ namespace WebsiteSellBook.Areas.Customer.Controllers
 				if (updateCart != null)
 				{
 					_unitOfWork.ShoppingCart.Remove(updateCart);
+					HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart.GetAll(item => item.ApplicationUserId == userId).Count() - 1);
 					_unitOfWork.Save();
 				}
 			}

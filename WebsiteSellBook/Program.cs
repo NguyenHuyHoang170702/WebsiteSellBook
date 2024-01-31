@@ -26,6 +26,18 @@ builder.Services.ConfigureApplicationCookie(options =>
 	options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
 	options.LoginPath = $"/Identity/Account/Login";
 });
+
+// Add session
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+	options.IdleTimeout = TimeSpan.FromMinutes(100);
+	options.Cookie.HttpOnly = true;
+	options.Cookie.IsEssential = true;
+});
+
+
+
 builder.Services.AddRazorPages();
 // Register with container
 // if you don't add scoped, you cannot dependency injection to controller
@@ -49,6 +61,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapRazorPages();
+app.UseSession();
 StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 app.MapControllerRoute(
 	  name: "areas",

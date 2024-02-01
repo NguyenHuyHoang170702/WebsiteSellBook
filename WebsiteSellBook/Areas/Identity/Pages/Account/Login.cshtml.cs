@@ -119,9 +119,6 @@ namespace WebsiteSellBook.Areas.Identity.Pages.Account
 				var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 				if (result.Succeeded)
 				{
-					var claimsIdentity = (ClaimsIdentity)User.Identity;
-					var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-					HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart.GetAll(item => item.ApplicationUserId == userId).Count());
 					_logger.LogInformation("User logged in.");
 					return LocalRedirect(returnUrl);
 				}

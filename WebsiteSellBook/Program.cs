@@ -27,6 +27,13 @@ builder.Services.ConfigureApplicationCookie(options =>
 	options.LoginPath = $"/Identity/Account/Login";
 });
 
+// Add facebook login
+builder.Services.AddAuthentication().AddFacebook(options =>
+{
+	options.AppId = "712335950966708";
+	options.AppSecret = "b6b85b9349127f337a22f9d011089cac";
+});
+
 // Add session
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>

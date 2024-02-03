@@ -252,6 +252,7 @@ namespace WebsiteSellBook.Areas.Customer.Controllers
 			List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart.GetAll(item => item.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
 			_unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
 			_unitOfWork.Save();
+			HttpContext.Session.Clear();
 			return View(id);
 		}
 	}

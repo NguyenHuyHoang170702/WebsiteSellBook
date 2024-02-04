@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using SellBook.DataAccess;
 using SellBook.DataAccess.Repository.IRepository;
@@ -16,13 +17,15 @@ namespace WebsiteSellBook.Areas.Customer.Controllers
 	public class ShoppingCartController : Controller
 	{
 		private readonly IUnitOfWork _unitOfWork;
+		private readonly IEmailSender _emailSender;
 
 		[BindProperty]
 		public ShoppingCartVM ShoppingCartVM { get; set; }
 
-		public ShoppingCartController(IUnitOfWork unitOfWork)
+		public ShoppingCartController(IUnitOfWork unitOfWork, IEmailSender emailSender)
 		{
 			_unitOfWork = unitOfWork;
+			_emailSender = emailSender;
 		}
 
 		public IActionResult Index()
@@ -248,11 +251,13 @@ namespace WebsiteSellBook.Areas.Customer.Controllers
 					_unitOfWork.OrderHeader.UpdateStatus(id, SD.StatusApproved, SD.PaymentStatusApproved);
 					_unitOfWork.Save();
 				}
+				HttpContext.Session.Clear();
 			}
+			_emailSender.SendEmailAsync(orderHeader.ApplicationUser.Email, "New Order - Sell Book", $"<p>Your order is success, order id - {orderHeader.Id}</p>");
 			List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart.GetAll(item => item.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
 			_unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
 			_unitOfWork.Save();
-			HttpContext.Session.Clear();
+
 			return View(id);
 		}
 	}

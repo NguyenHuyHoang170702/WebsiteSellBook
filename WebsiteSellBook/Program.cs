@@ -7,6 +7,7 @@ using SellBook.Utility;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Stripe;
+using SellBook.DataAccess.DbInitializer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +52,9 @@ builder.Services.AddRazorPages();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
+//init db initialize
+builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+
 
 var app = builder.Build();
 
@@ -69,6 +73,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapRazorPages();
 app.UseSession();
+SeedDatabase();
 StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 app.MapControllerRoute(
 	  name: "areas",
@@ -77,3 +82,12 @@ app.MapControllerRoute(
 	);
 
 app.Run();
+
+void SeedDatabase()
+{
+	using (var scope = app.Services.CreateScope())
+	{
+		var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+		dbInitializer.Initialize();
+	}
+}

@@ -100,7 +100,7 @@ namespace WebsiteSellBook.Areas.Customer.Controllers
 				else if (updateCart.Count <= 1)
 				{
 					_unitOfWork.ShoppingCart.Remove(updateCart);
-					HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart.GetAll(item => item.ApplicationUserId == userId).Count());
+					HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart.GetAll(item => item.ApplicationUserId == userId).Count() - 1);
 				}
 				_unitOfWork.Save();
 			}

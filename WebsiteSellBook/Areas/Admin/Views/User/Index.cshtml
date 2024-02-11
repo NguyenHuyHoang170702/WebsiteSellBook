@@ -1,0 +1,37 @@
+﻿@{
+	ViewData["Title"] = "Index";
+}
+<partial name="_Notification" />
+
+<div class="card shadow border-0 mt-4 p-3">
+	<div class="card-header bg-primary bg-gradient ml-0 py-3">
+		<div class="row">
+			<div class="col-12 text-center">
+				<h2 class="text-white py-2">User List</h2>
+			</div>
+		</div>
+	</div>
+	<div class="card-body p-4 ">
+		<table id="tblUserList" class="table">
+			<thead class="table-primary">
+				<tr>
+					<th scope="col">Name</th>
+					<th scope="col">Email</th>
+					<th scope="col">Phone</th>
+					<th scope="col">Company</th>
+					<th scope="col">Role</th>
+					<th scope="col">Actions</th>
+				</tr>
+			</thead>
+
+		</table>
+
+	</div>
+
+</div>
+
+
+@section Scripts {
+	<script src="~/js/user.js"></script>
+}
+

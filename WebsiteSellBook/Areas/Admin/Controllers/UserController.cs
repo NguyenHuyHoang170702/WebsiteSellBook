@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SellBook.DataAccess;
 using SellBook.DataAccess.Repository.IRepository;
@@ -15,6 +16,7 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 	public class UserController : Controller
 	{
 		private readonly ApplicationDbContext _db;
+
 		public UserController(ApplicationDbContext db)
 		{
 			_db = db;
@@ -22,6 +24,29 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 		public IActionResult Index()
 		{
 			return View();
+		}
+
+
+		public IActionResult Permissions(string userId)
+		{
+			string roleId = _db.UserRoles.FirstOrDefault(x => x.UserId == userId).RoleId;
+			UserVM userVM = new UserVM()
+			{
+				applicationUser = _db.ApplicationUsers.Include(item => item.Company).FirstOrDefault(item => item.Id == userId),
+				RoleList = _db.Roles.Select(item => new SelectListItem
+				{
+					Text = item.Name,
+					Value = item.Name,
+				}),
+				CompanyList = _db.Companies.Select(item => new SelectListItem
+				{
+					Text = item.CompanyName,
+					Value = item.CpmpanyId.ToString()
+				}),
+			};
+			userVM.applicationUser.Role = _db.Roles.FirstOrDefault(item => item.Id == roleId).Name;
+
+			return View(userVM);
 		}
 
 

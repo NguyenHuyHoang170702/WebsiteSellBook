@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -16,10 +17,14 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 	public class UserController : Controller
 	{
 		private readonly ApplicationDbContext _db;
+		private readonly UserManager<IdentityUser> _userManager;
 
-		public UserController(ApplicationDbContext db)
+		[BindProperty]
+		public UserVM userVM { get; set; }
+		public UserController(ApplicationDbContext db, UserManager<IdentityUser> userManager)
 		{
 			_db = db;
+			_userManager = userManager;
 		}
 		public IActionResult Index()
 		{
@@ -30,7 +35,7 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 		public IActionResult Permissions(string userId)
 		{
 			string roleId = _db.UserRoles.FirstOrDefault(x => x.UserId == userId).RoleId;
-			UserVM userVM = new UserVM()
+			userVM = new UserVM()
 			{
 				applicationUser = _db.ApplicationUsers.Include(item => item.Company).FirstOrDefault(item => item.Id == userId),
 				RoleList = _db.Roles.Select(item => new SelectListItem
@@ -47,6 +52,40 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 			userVM.applicationUser.Role = _db.Roles.FirstOrDefault(item => item.Id == roleId).Name;
 
 			return View(userVM);
+		}
+
+		[HttpPost]
+		public IActionResult Permissions()
+		{
+			string roleId = _db.UserRoles.FirstOrDefault(x => x.UserId == userVM.applicationUser.Id).RoleId;
+			string oldRole = _db.Roles.FirstOrDefault(item => item.Id == roleId).Name;
+			if (!(userVM.applicationUser.Role == oldRole))
+			{
+				// a role was update
+				ApplicationUser applicationUser = _db.ApplicationUsers.FirstOrDefault(item => item.Id == userVM.applicationUser.Id);
+				if (userVM.applicationUser.Role == SD.Role_Company)
+				{
+					applicationUser.CompanyId = userVM.applicationUser.CompanyId;
+				}
+				if (oldRole == SD.Role_Company)
+				{
+					applicationUser.CompanyId = null;
+				}
+				_db.SaveChanges();
+				_userManager.RemoveFromRoleAsync(applicationUser, oldRole).GetAwaiter().GetResult();
+				_userManager.AddToRoleAsync(applicationUser, userVM.applicationUser.Role).GetAwaiter().GetResult();
+			}
+			else
+			{
+				ApplicationUser applicationUser = _db.ApplicationUsers.FirstOrDefault(item => item.Id == userVM.applicationUser.Id);
+				if (userVM.applicationUser.Role == SD.Role_Company)
+				{
+					applicationUser.CompanyId = userVM.applicationUser.CompanyId;
+					_db.SaveChanges();
+				}
+			}
+
+			return RedirectToAction(nameof(Index));
 		}
 
 

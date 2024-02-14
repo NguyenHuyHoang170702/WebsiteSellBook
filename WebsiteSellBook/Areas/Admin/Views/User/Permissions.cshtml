@@ -15,7 +15,7 @@
 		</div>
 		<div class="row">
 			<div>
-				<form method="post" asp-action="">
+				<form method="post" asp-action="Permissions">
 					<input asp-for="applicationUser.Id" type="hidden" />
 					<div class="p-3 border border-primary">
 
@@ -55,13 +55,13 @@
 	<Partial name="_ValidationScriptsPartial" />
 	<script>
 		$(document).ready(() => {
-			$("#applicationUser.CompanyId").hide();
-			$("#applicationUser.Role").change(() => {
-				let selection = $("#applicationUser.Role option:selected").text();
+			$("#applicationUser_CompanyId").hide();
+			$("#applicationUser_Role").ready(() => {
+				let selection = $("#applicationUser_Role option:selected").text();
 				if (selection == "Company") {
-					$("#applicationUser.CompanyId").show();
+					$("#applicationUser_CompanyId").show();
 				} else {
-					$("#applicationUser.CompanyId").hide();
+					$("#applicationUser_CompanyId").hide();
 				}
 			});
 		});

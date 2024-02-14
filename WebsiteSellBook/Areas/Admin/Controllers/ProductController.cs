@@ -63,19 +63,19 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 				{
 					string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
 					string productPath = Path.Combine(wwwRootPath, @"images\products");
-					if (!string.IsNullOrEmpty(productVM.Product.ProductImageUrl))
-					{
-						var oldImagePath = Path.Combine(wwwRootPath, productVM.Product.ProductImageUrl.TrimStart('\\'));
-						if (System.IO.File.Exists(oldImagePath))
-						{
-							System.IO.File.Delete(oldImagePath);
-						}
-					}
-					using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
-					{
-						file.CopyTo(fileStream);
-					}
-					productVM.Product.ProductImageUrl = @"\images\products\" + fileName;
+					//if (!string.IsNullOrEmpty(productVM.Product.ProductImageUrl))
+					//{
+					//	var oldImagePath = Path.Combine(wwwRootPath, productVM.Product.ProductImageUrl.TrimStart('\\'));
+					//	if (System.IO.File.Exists(oldImagePath))
+					//	{
+					//		System.IO.File.Delete(oldImagePath);
+					//	}
+					//}
+					//using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
+					//{
+					//	file.CopyTo(fileStream);
+					//}
+					//productVM.Product.ProductImageUrl = @"\images\products\" + fileName;
 				}
 
 				if (productVM.Product.Product_Id == 0)
@@ -123,11 +123,11 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 			var exitId = _unitOfWork.Product.Get(item => item.Product_Id == id);
 			if (exitId != null)
 			{
-				var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, exitId.ProductImageUrl.TrimStart('\\'));
-				if (System.IO.File.Exists(oldImagePath))
-				{
-					System.IO.File.Delete(oldImagePath);
-				}
+				//var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, exitId.ProductImageUrl.TrimStart('\\'));
+				//if (System.IO.File.Exists(oldImagePath))
+				//{
+				//	System.IO.File.Delete(oldImagePath);
+				//}
 				_unitOfWork.Product.Remove(exitId);
 				_unitOfWork.Save();
 

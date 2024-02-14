@@ -67,10 +67,10 @@ namespace SellBook.Models
 		public double Price100 { get; set; }
 		#endregion
 
-		#region product image Url
-		[Display(Name = "Image")]
-		public string? ProductImageUrl { get; set; }
-		#endregion
+		//#region product image Url
+		//[Display(Name = "Image")]
+		//public string? ProductImageUrl { get; set; }
+		//#endregion
 
 		#region Add foreign Key CategoryId
 		[Display(Name = "Category")]
@@ -79,6 +79,11 @@ namespace SellBook.Models
 
 		[ValidateNever]
 		public Category Category { get; set; }
+		#endregion
+
+		#region List images of Product
+		[ValidateNever]
+		public List<ProductImage> ProductImages { get; set; }
 		#endregion
 
 

@@ -42,7 +42,7 @@ namespace SellBook.DataAccess
 					Price50 = 8,
 					Price100 = 6,
 					CategoryId = 2,
-					ProductImageUrl = "",
+
 				},
 				new Product
 				{
@@ -56,7 +56,7 @@ namespace SellBook.DataAccess
 					Price50 = 8,
 					Price100 = 6,
 					CategoryId = 1,
-					ProductImageUrl = "",
+
 				},
 				new Product
 				{
@@ -70,7 +70,7 @@ namespace SellBook.DataAccess
 					Price50 = 8,
 					Price100 = 6,
 					CategoryId = 2,
-					ProductImageUrl = "",
+
 				}
 			);
 			#endregion
@@ -95,5 +95,6 @@ namespace SellBook.DataAccess
 
 		public DbSet<OrderHeader> OrderHeaders { get; set; }
 		public DbSet<OrderDetail> OrderDetails { get; set; }
+		public DbSet<ProductImage> ProductImages { get; set; }
 	}
 }

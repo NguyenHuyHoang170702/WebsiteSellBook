@@ -24,6 +24,8 @@ namespace SellBook.DataAccess.Repository
 
 		public IOrderHeader OrderHeader { get; private set; }
 
+		public IProductImageRepository ProductImage { get; private set; }
+
 		private ApplicationDbContext _db;
 		public UnitOfWork(ApplicationDbContext db)
 		{
@@ -35,6 +37,7 @@ namespace SellBook.DataAccess.Repository
 			ApplicationUser = new ApplicationUserRepository(_db);
 			OrderDetail = new OrderDetailRepository(_db);
 			OrderHeader = new OrderHeaderRepository(_db);
+			ProductImage = new ProductImageRepository(_db);
 		}
 		public void Save()
 		{

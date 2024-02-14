@@ -19,6 +19,7 @@ namespace SellBook.DataAccess.Repository.IRepository
 		IOrderDetail OrderDetail { get; }
 
 		IOrderHeader OrderHeader { get; }
+		IProductImageRepository ProductImage { get; }
 		void Save();
 
 	}

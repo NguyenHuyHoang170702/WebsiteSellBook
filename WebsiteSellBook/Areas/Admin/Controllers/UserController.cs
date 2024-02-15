@@ -16,15 +16,17 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 	[Authorize(Roles = SD.Role_Admin)]
 	public class UserController : Controller
 	{
-		private readonly ApplicationDbContext _db;
+		private readonly IUnitOfWork _unitOfWork;
 		private readonly UserManager<IdentityUser> _userManager;
+		private readonly RoleManager<IdentityRole> _roleManager;
 
 		[BindProperty]
 		public UserVM userVM { get; set; }
-		public UserController(ApplicationDbContext db, UserManager<IdentityUser> userManager)
+		public UserController(IUnitOfWork unitOfWork, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
 		{
-			_db = db;
+			_unitOfWork = unitOfWork;
 			_userManager = userManager;
+			_roleManager = roleManager;
 		}
 		public IActionResult Index()
 		{
@@ -34,22 +36,23 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 
 		public IActionResult Permissions(string userId)
 		{
-			string roleId = _db.UserRoles.FirstOrDefault(x => x.UserId == userId).RoleId;
+
 			userVM = new UserVM()
 			{
-				applicationUser = _db.ApplicationUsers.Include(item => item.Company).FirstOrDefault(item => item.Id == userId),
-				RoleList = _db.Roles.Select(item => new SelectListItem
+				applicationUser = _unitOfWork.ApplicationUser.Get(item => item.Id == userId, includeProperties: "Company"),
+				RoleList = _roleManager.Roles.Select(item => new SelectListItem
 				{
 					Text = item.Name,
 					Value = item.Name,
 				}),
-				CompanyList = _db.Companies.Select(item => new SelectListItem
+				CompanyList = _unitOfWork.Company.GetAll().Select(item => new SelectListItem
 				{
 					Text = item.CompanyName,
 					Value = item.CpmpanyId.ToString()
 				}),
 			};
-			userVM.applicationUser.Role = _db.Roles.FirstOrDefault(item => item.Id == roleId).Name;
+			userVM.applicationUser.Role = _userManager.GetRolesAsync(_unitOfWork.ApplicationUser.Get(item => item.Id == userId))
+				.GetAwaiter().GetResult().FirstOrDefault();
 
 			return View(userVM);
 		}
@@ -57,12 +60,13 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 		[HttpPost]
 		public IActionResult Permissions()
 		{
-			string roleId = _db.UserRoles.FirstOrDefault(x => x.UserId == userVM.applicationUser.Id).RoleId;
-			string oldRole = _db.Roles.FirstOrDefault(item => item.Id == roleId).Name;
+
+			string oldRole = _userManager.GetRolesAsync(_unitOfWork.ApplicationUser.Get(item => item.Id == userVM.applicationUser.Id))
+				.GetAwaiter().GetResult().FirstOrDefault();
 			if (!(userVM.applicationUser.Role == oldRole))
 			{
 				// a role was update
-				ApplicationUser applicationUser = _db.ApplicationUsers.FirstOrDefault(item => item.Id == userVM.applicationUser.Id);
+				ApplicationUser applicationUser = _unitOfWork.ApplicationUser.Get(item => item.Id == userVM.applicationUser.Id);
 				if (userVM.applicationUser.Role == SD.Role_Company)
 				{
 					applicationUser.CompanyId = userVM.applicationUser.CompanyId;
@@ -71,17 +75,18 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 				{
 					applicationUser.CompanyId = null;
 				}
-				_db.SaveChanges();
+				_unitOfWork.ApplicationUser.Update(applicationUser);
+				_unitOfWork.Save();
 				_userManager.RemoveFromRoleAsync(applicationUser, oldRole).GetAwaiter().GetResult();
 				_userManager.AddToRoleAsync(applicationUser, userVM.applicationUser.Role).GetAwaiter().GetResult();
 			}
 			else
 			{
-				ApplicationUser applicationUser = _db.ApplicationUsers.FirstOrDefault(item => item.Id == userVM.applicationUser.Id);
+				ApplicationUser applicationUser = _unitOfWork.ApplicationUser.Get(item => item.Id == userVM.applicationUser.Id);
 				if (userVM.applicationUser.Role == SD.Role_Company)
 				{
 					applicationUser.CompanyId = userVM.applicationUser.CompanyId;
-					_db.SaveChanges();
+					_unitOfWork.Save();
 				}
 			}
 
@@ -94,16 +99,12 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 		[HttpGet]
 		public IActionResult GetAll()
 		{
-			var getData = _db.ApplicationUsers.Include(item => item.Company).ToList();
+			var getData = _unitOfWork.ApplicationUser.GetAll(includeProperties: "Company").ToList();
 
-			var userRoles = _db.UserRoles.ToList();
-			var roles = _db.Roles.ToList();
 
 			foreach (var user in getData)
 			{
-				var roleId = userRoles.FirstOrDefault(item => item.UserId == user.Id).RoleId;
-				user.Role = roles.FirstOrDefault(item => item.Id == roleId).Name;
-
+				user.Role = _userManager.GetRolesAsync(user).GetAwaiter().GetResult().FirstOrDefault();
 			}
 
 
@@ -116,7 +117,7 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 		public IActionResult LockUnlock([FromBody] string id)
 		{
 
-			var objFromDb = _db.ApplicationUsers.FirstOrDefault(item => item.Id == id);
+			var objFromDb = _unitOfWork.ApplicationUser.Get(item => item.Id == id);
 			if (objFromDb == null)
 			{
 				return Json(new
@@ -138,7 +139,8 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 				// if you lock user, they can't login 1000 years
 				objFromDb.LockoutEnd = DateTime.Now.AddYears(1000);
 			}
-			_db.SaveChanges();
+			_unitOfWork.ApplicationUser.Update(objFromDb);
+			_unitOfWork.Save();
 			return Json(new
 			{
 				success = true,

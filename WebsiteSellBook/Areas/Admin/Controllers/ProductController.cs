@@ -45,7 +45,7 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 			else
 			{
 				ViewBag.Title = "Update Product";
-				productVM.Product = _unitOfWork.Product.Get(item => item.Product_Id == id);
+				productVM.Product = _unitOfWork.Product.Get(item => item.Product_Id == id, includeProperties: "ProductImages");
 				return View(productVM);
 			}
 
@@ -53,30 +53,11 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public IActionResult CreateAndUpdateProduct(ProductVM productVM, IFormFile? file)
+		public IActionResult CreateAndUpdateProduct(ProductVM productVM, List<IFormFile?> files)
 		{
 
 			if (ModelState.IsValid)
 			{
-				string wwwRootPath = _webHostEnvironment.WebRootPath;
-				if (file != null)
-				{
-					string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-					string productPath = Path.Combine(wwwRootPath, @"images\products");
-					//if (!string.IsNullOrEmpty(productVM.Product.ProductImageUrl))
-					//{
-					//	var oldImagePath = Path.Combine(wwwRootPath, productVM.Product.ProductImageUrl.TrimStart('\\'));
-					//	if (System.IO.File.Exists(oldImagePath))
-					//	{
-					//		System.IO.File.Delete(oldImagePath);
-					//	}
-					//}
-					//using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
-					//{
-					//	file.CopyTo(fileStream);
-					//}
-					//productVM.Product.ProductImageUrl = @"\images\products\" + fileName;
-				}
 
 				if (productVM.Product.Product_Id == 0)
 				{
@@ -91,6 +72,46 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 					TempData["Title"] = "Update product";
 				}
 				_unitOfWork.Save();
+				string wwwRootPath = _webHostEnvironment.WebRootPath;
+
+				if (files != null)
+				{
+					foreach (IFormFile file in files)
+					{
+						// random file name
+						string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+						// create file have images, name file is random name + product id
+						string productPath = @"images\products\product-" + productVM.Product.Product_Id;
+						// final path = path to root file + productpath  
+						string finalPath = Path.Combine(wwwRootPath, productPath);
+
+						if (!Directory.Exists(finalPath))
+						{
+							Directory.CreateDirectory(finalPath);
+						}
+						using (var fileStream = new FileStream(Path.Combine(finalPath, fileName), FileMode.Create))
+						{
+							file.CopyTo(fileStream);
+						}
+						ProductImage productImage = new ProductImage()
+						{
+							ImgUrl = @"\" + productPath + @"\" + fileName,
+							ProductId = productVM.Product.Product_Id,
+						};
+						// if product images is null, not receive exception
+						if (productVM.Product.ProductImages == null)
+						{
+							productVM.Product.ProductImages = new List<ProductImage>();
+						}
+						productVM.Product.ProductImages.Add(productImage);
+
+					}
+					_unitOfWork.Product.Update(productVM.Product);
+					_unitOfWork.Save();
+
+				}
+				TempData["Success"] = "Create/Update product successful !!!";
+				TempData["Title"] = "Create/Update product";
 
 				return RedirectToAction("Index");
 			}
@@ -104,6 +125,29 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 				return View(productVM);
 			}
 
+		}
+
+		public IActionResult DeleteImage(int ImageId)
+		{
+			var imagesToBeDelete = _unitOfWork.ProductImage.Get(item => item.Id == ImageId);
+			var productId = imagesToBeDelete.ProductId;
+			string wwwRootPath = _webHostEnvironment.WebRootPath;
+			if (imagesToBeDelete != null)
+			{
+				if (!string.IsNullOrEmpty(imagesToBeDelete.ImgUrl))
+				{
+					var oldImagePath = Path.Combine(wwwRootPath, imagesToBeDelete.ImgUrl.TrimStart('\\'));
+					if (System.IO.File.Exists(oldImagePath))
+					{
+						System.IO.File.Delete(oldImagePath);
+					}
+				}
+
+				_unitOfWork.ProductImage.Remove(imagesToBeDelete);
+				_unitOfWork.Save();
+				TempData["Success"] = "Delete Image successful !!!";
+			}
+			return RedirectToAction(nameof(CreateAndUpdateProduct), new { id = productId });
 		}
 
 		#region API Calls
@@ -123,11 +167,21 @@ namespace WebsiteSellBook.Areas.Admin.Controllers
 			var exitId = _unitOfWork.Product.Get(item => item.Product_Id == id);
 			if (exitId != null)
 			{
-				//var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, exitId.ProductImageUrl.TrimStart('\\'));
-				//if (System.IO.File.Exists(oldImagePath))
-				//{
-				//	System.IO.File.Delete(oldImagePath);
-				//}
+				string wwwRootPath = _webHostEnvironment.WebRootPath;
+				// create file have images, name file is random name + product id
+				string productPath = @"images\products\product-" + exitId.Product_Id;
+				// final path = path to root file + productpath  
+				string finalPath = Path.Combine(wwwRootPath, productPath);
+
+				if (Directory.Exists(finalPath))
+				{
+					string[] filePaths = Directory.GetFiles(finalPath);
+					foreach (string filePath in filePaths)
+					{
+						System.IO.File.Delete(filePath);
+					}
+					Directory.Delete(finalPath);
+				}
 				_unitOfWork.Product.Remove(exitId);
 				_unitOfWork.Save();
 

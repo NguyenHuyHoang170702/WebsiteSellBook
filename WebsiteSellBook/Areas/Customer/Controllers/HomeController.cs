@@ -22,7 +22,7 @@ namespace WebsiteSellBook.Areas.Customer.Controllers
 
 		public IActionResult Index()
 		{
-			List<Product> lstProduct = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
+			List<Product> lstProduct = _unitOfWork.Product.GetAll(includeProperties: "Category,ProductImages").ToList();
 			return View(lstProduct);
 		}
 
@@ -30,7 +30,7 @@ namespace WebsiteSellBook.Areas.Customer.Controllers
 		{
 			ShoppingCart shoppingCart = new()
 			{
-				Product = _unitOfWork.Product.Get(item => item.Product_Id == Productid, includeProperties: "Category"),
+				Product = _unitOfWork.Product.Get(item => item.Product_Id == Productid, includeProperties: "Category,ProductImages"),
 				Count = 1,
 				ProductId = Productid,
 			};

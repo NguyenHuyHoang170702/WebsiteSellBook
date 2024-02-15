@@ -38,8 +38,11 @@ namespace WebsiteSellBook.Areas.Customer.Controllers
 				orderHeader = new OrderHeader()
 			};
 
+			IEnumerable<ProductImage> productImages = _unitOfWork.ProductImage.GetAll();
+
 			foreach (var cart in ShoppingCartVM.shoppingCartList)
 			{
+				cart.Product.ProductImages = productImages.Where(item => item.ProductId == cart.Product.Product_Id).ToList();
 				cart.Price = GetPriceOnQuantity(cart);
 				ShoppingCartVM.orderHeader.OrderTotal += (cart.Count * cart.Price);
 			}
